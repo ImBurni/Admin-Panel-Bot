@@ -251,12 +251,6 @@
             font-size: 1.1rem;
         }
 
-        .user-email {
-            color: #7a7a85;
-            font-size: 0.85rem;
-            margin-top: 0.2rem;
-        }
-
         .role-badge {
             display: inline-block;
             padding: 0.4rem 1rem;
@@ -374,7 +368,6 @@
             font-size: 1.1rem;
         }
 
-        /* Crypto.js für Hashing */
         .crypto-note {
             color: #5a5a65;
             font-size: 0.8rem;
@@ -479,18 +472,40 @@
     <script>
         // ==================== SICHERE DATENBANK ====================
         const ADMIN_USERNAME = 'ImBurni';
-        const ADMIN_PASSWORD_HASH = CryptoJS.SHA256('admin123').toString();
+        // Hier wird der Hash für 'Admin123!' generiert
+        const ADMIN_PASSWORD_HASH = CryptoJS.SHA256('Admin123!').toString();
+
+        console.log('Admin Hash:', ADMIN_PASSWORD_HASH); // Zum Überprüfen
 
         // Users initialisieren
-        let users = JSON.parse(localStorage.getItem('mod_users')) || [
-            {
-                id: 1,
-                username: 'ImBurni',
-                passwordHash: ADMIN_PASSWORD_HASH,
-                role: 'Admin',
-                status: 'aktiv'
+        let users = JSON.parse(localStorage.getItem('mod_users')) || [];
+        
+        // Wenn keine Users existieren, Admin anlegen
+        if (users.length === 0) {
+            users = [
+                {
+                    id: '1',
+                    username: 'ImBurni',
+                    passwordHash: ADMIN_PASSWORD_HASH,
+                    role: 'Admin',
+                    status: 'aktiv'
+                }
+            ];
+            localStorage.setItem('mod_users', JSON.stringify(users));
+        } else {
+            // Prüfen ob ImBurni existiert, wenn nicht hinzufügen
+            const adminExists = users.some(u => u.username === 'ImBurni');
+            if (!adminExists) {
+                users.push({
+                    id: Date.now().toString(),
+                    username: 'ImBurni',
+                    passwordHash: ADMIN_PASSWORD_HASH,
+                    role: 'Admin',
+                    status: 'aktiv'
+                });
+                localStorage.setItem('mod_users', JSON.stringify(users));
             }
-        ];
+        }
 
         let currentUser = JSON.parse(sessionStorage.getItem('currentUser')) || null;
 
@@ -548,10 +563,11 @@
         function renderUserTable() {
             const isAdmin = currentUser?.username === 'ImBurni';
             
-            // Stats berechnen
-            const total = users.length;
-            const pending = users.filter(u => u.status === 'ausstehend').length;
-            const active = users.filter(u => u.status === 'aktiv').length;
+            // Stats berechnen (ohne Admin)
+            const normalUsers = users.filter(u => u.username !== 'ImBurni');
+            const total = normalUsers.length;
+            const pending = normalUsers.filter(u => u.status === 'ausstehend').length;
+            const active = normalUsers.filter(u => u.status === 'aktiv').length;
             
             document.getElementById('totalUsers').textContent = total;
             document.getElementById('pendingUsers').textContent = pending;
@@ -559,10 +575,7 @@
 
             // Tabelle bauen
             let html = '';
-            users.forEach(user => {
-                // Admin nicht in der Liste anzeigen (aber für Stats zählen)
-                if (user.username === 'ImBurni') return;
-                
+            normalUsers.forEach(user => {
                 const roleClass = user.role === 'Admin' ? 'role-admin' : 'role-mod';
                 const statusClass = user.status === 'aktiv' ? 'status-active' : 'status-pending';
                 
@@ -633,15 +646,26 @@
             const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value;
             
+            console.log('Login Versuch:', username, password);
+            
             if (!username || !password) {
                 showMessage(document.getElementById('loginMessage'), '❌ Bitte alles ausfüllen');
                 return;
             }
 
             const passwordHash = hashPassword(password);
-            const user = users.find(u => u.username === username && u.passwordHash === passwordHash);
-
+            console.log('Generierter Hash:', passwordHash);
+            
+            const user = users.find(u => u.username === username);
+            console.log('Gefundener User:', user);
+            
             if (!user) {
+                showMessage(document.getElementById('loginMessage'), '❌ Falscher Benutzername oder Passwort');
+                return;
+            }
+
+            if (user.passwordHash !== passwordHash) {
+                console.log('Hash Vergleich:', user.passwordHash, 'vs', passwordHash);
                 showMessage(document.getElementById('loginMessage'), '❌ Falscher Benutzername oder Passwort');
                 return;
             }
@@ -742,7 +766,7 @@
             }
         });
 
-        console.log('✅ Admin Panel geladen - Nur ImBurni kann freischalten');
+        console.log('✅ Admin Panel geladen - ImBurni/Admin123! sollte funktionieren');
     </script>
 </body>
 </html>
