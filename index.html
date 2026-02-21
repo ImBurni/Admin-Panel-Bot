@@ -19,12 +19,6 @@
         }
         
         /* Container */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        /* Login Box */
         .login-box {
             background: white;
             padding: 2.5rem;
@@ -40,6 +34,8 @@
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 1400px;
+            margin: 0 auto;
         }
         
         /* Sidebar */
@@ -172,7 +168,6 @@
         
         .btn-primary:hover {
             background: #5a67d8;
-            transform: translateY(-2px);
         }
         
         .btn-danger {
@@ -238,10 +233,6 @@
             color: #2d3748;
         }
         
-        .table tr:hover {
-            background: #f7fafc;
-        }
-        
         /* Badges */
         .badge {
             padding: 5px 12px;
@@ -298,6 +289,44 @@
             resize: vertical;
         }
         
+        /* Update Cards */
+        .update-card {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .update-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .update-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .update-date {
+            color: #718096;
+            font-size: 12px;
+        }
+        
+        .update-content {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        
+        .update-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+        
         /* Modal */
         .modal {
             display: none;
@@ -337,6 +366,10 @@
             color: #718096;
         }
         
+        .close:hover {
+            color: #2d3748;
+        }
+        
         .hidden {
             display: none !important;
         }
@@ -358,6 +391,26 @@
             background: #c6f6d5;
             color: #22543d;
         }
+        
+        /* Team Info Display */
+        .team-info-box {
+            background: #ebf4ff;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .team-info-box h4 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .team-info-box p {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </head>
@@ -365,8 +418,8 @@
     <!-- LOGIN -->
     <div id="loginPage" class="login-box">
         <h2 style="text-align: center; margin-bottom: 30px;">🔐 Team Portal Login</h2>
-        <input type="text" id="username" placeholder="Benutzername" value="ImBurni" style="width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #e2e8f0; border-radius: 10px;">
-        <input type="password" id="password" placeholder="Passwort" value="admin123" style="width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #e2e8f0; border-radius: 10px;">
+        <input type="text" id="username" placeholder="Benutzername" style="width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #e2e8f0; border-radius: 10px;">
+        <input type="password" id="password" placeholder="Passwort" style="width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #e2e8f0; border-radius: 10px;">
         <button onclick="handleLogin()" style="width: 100%; padding: 15px; background: #667eea; color: white; border: none; border-radius: 10px; margin: 10px 0; cursor: pointer;">Einloggen</button>
         <button onclick="showRegister()" style="width: 100%; padding: 15px; background: #48bb78; color: white; border: none; border-radius: 10px; cursor: pointer;">Registrieren</button>
         <div id="loginMessage" class="message"></div>
@@ -396,11 +449,14 @@
                 <div class="menu-item" onclick="switchTab('users', this)">
                     👥 Nutzerverwaltung
                 </div>
-                <div class="menu-item" onclick="switchTab('team', this)">
-                    👤 Team-Infos
+                <div class="menu-item" onclick="switchTab('updates', this)">
+                    📢 Updates verwalten
                 </div>
-                <div class="menu-item" onclick="switchTab('editTeam', this)">
-                    ✏️ Team bearbeiten
+                <div class="menu-item" onclick="switchTab('teaminfo', this)">
+                    ℹ️ Team-Info verwalten
+                </div>
+                <div class="menu-item" onclick="switchTab('settings', this)">
+                    ⚙️ Einstellungen
                 </div>
             </div>
         </div>
@@ -422,20 +478,38 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <h4>Team Mitglieder</h4>
-                        <div class="number" id="totalTeamMembers">0</div>
+                        <div class="number" id="totalMembers">0</div>
                     </div>
                     <div class="stat-card">
                         <h4>Ausstehend</h4>
                         <div class="number" id="pendingMembers">0</div>
                     </div>
                     <div class="stat-card">
+                        <h4>Updates</h4>
+                        <div class="number" id="totalUpdates">0</div>
+                    </div>
+                    <div class="stat-card">
                         <h4>Aktive Mods</h4>
                         <div class="number" id="activeMods">0</div>
                     </div>
-                    <div class="stat-card">
-                        <h4>Registrierungen</h4>
-                        <div class="number" id="totalRegistrations">0</div>
+                </div>
+
+                <!-- Neueste Updates Vorschau -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>📢 Letzte Updates</h3>
+                        <button class="btn btn-primary" onclick="switchTab('updates', document.querySelectorAll('.menu-item')[2])">Alle anzeigen</button>
                     </div>
+                    <div id="recentUpdates"></div>
+                </div>
+
+                <!-- Team Info Vorschau -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>ℹ️ Team Information</h3>
+                        <button class="btn btn-primary" onclick="switchTab('teaminfo', document.querySelectorAll('.menu-item')[3])">Bearbeiten</button>
+                    </div>
+                    <div id="teamInfoPreview"></div>
                 </div>
             </div>
 
@@ -460,41 +534,90 @@
                 </div>
             </div>
 
-            <!-- Team Info Tab -->
-            <div id="teamTab" class="tab-content hidden">
+            <!-- Updates Tab -->
+            <div id="updatesTab" class="tab-content hidden">
                 <div class="content-card">
                     <div class="card-header">
-                        <h3>👤 Team Informationen</h3>
+                        <h3>📢 Updates verwalten</h3>
+                        <button class="btn btn-success" onclick="showUpdateModal()">+ Neues Update</button>
                     </div>
-                    <div id="teamInfoDisplay"></div>
+                    <div id="updatesList"></div>
                 </div>
             </div>
 
-            <!-- Edit Team Tab -->
-            <div id="editTeamTab" class="tab-content hidden">
+            <!-- Team Info Tab -->
+            <div id="teaminfoTab" class="tab-content hidden">
                 <div class="content-card">
                     <div class="card-header">
-                        <h3>✏️ Team bearbeiten</h3>
+                        <h3>ℹ️ Team-Info bearbeiten</h3>
                     </div>
                     
                     <div class="form-group">
                         <label>Team Name</label>
-                        <input type="text" id="teamName" value="Moderations-Team">
+                        <input type="text" id="teamName" placeholder="z.B. Moderations-Team">
                     </div>
                     
                     <div class="form-group">
                         <label>Team Beschreibung</label>
-                        <textarea id="teamDescription">Wir sind das offizielle Moderations-Team.</textarea>
+                        <textarea id="teamDescription" placeholder="Beschreibe dein Team..."></textarea>
                     </div>
                     
                     <div class="form-group">
                         <label>Kontakt Email</label>
-                        <input type="email" id="teamEmail" value="team@example.com">
+                        <input type="email" id="teamEmail" placeholder="team@example.com">
                     </div>
                     
-                    <button class="btn btn-primary" onclick="saveTeamInfo()">Speichern</button>
+                    <div class="form-group">
+                        <label>Weitere Informationen</label>
+                        <textarea id="teamExtra" placeholder="Zusätzliche Infos..."></textarea>
+                    </div>
+                    
+                    <button class="btn btn-success" onclick="saveTeamInfo()">Team-Info speichern</button>
                 </div>
             </div>
+
+            <!-- Settings Tab -->
+            <div id="settingsTab" class="tab-content hidden">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>⚙️ Einstellungen</h3>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Website Titel</label>
+                        <input type="text" id="siteTitle" value="Team Portal">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Admin Email</label>
+                        <input type="email" id="adminEmail" value="admin@example.com">
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="saveSettings()">Einstellungen speichern</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Modal -->
+    <div id="updateModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Neues Update erstellen</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            
+            <div class="form-group">
+                <label>Titel</label>
+                <input type="text" id="updateTitle" placeholder="z.B. Wichtige Ankündigung">
+            </div>
+            
+            <div class="form-group">
+                <label>Inhalt</label>
+                <textarea id="updateContent" placeholder="Schreibe hier den Update-Text..."></textarea>
+            </div>
+            
+            <button class="btn btn-success" onclick="createUpdate()">Update veröffentlichen</button>
         </div>
     </div>
 
@@ -504,25 +627,9 @@
         // Admin anlegen
         const adminHash = CryptoJS.SHA256('admin123').toString();
         
-        // Prüfen ob schon Users existieren
+        // Users initialisieren
         let users = [];
-        const storedUsers = localStorage.getItem('users');
-        
-        if (storedUsers) {
-            users = JSON.parse(storedUsers);
-            // Prüfen ob Admin existiert
-            if (!users.find(u => u.username === 'ImBurni')) {
-                users.push({
-                    id: '1',
-                    username: 'ImBurni',
-                    passwordHash: adminHash,
-                    role: 'Admin',
-                    status: 'aktiv',
-                    registeredAt: new Date().toLocaleDateString('de-DE')
-                });
-            }
-        } else {
-            // Erste Initialisierung
+        if (!localStorage.getItem('users')) {
             users = [
                 {
                     id: '1',
@@ -533,16 +640,44 @@
                     registeredAt: new Date().toLocaleDateString('de-DE')
                 }
             ];
+            localStorage.setItem('users', JSON.stringify(users));
+        } else {
+            users = JSON.parse(localStorage.getItem('users'));
+            // Admin sicherstellen
+            if (!users.find(u => u.username === 'ImBurni')) {
+                users.push({
+                    id: '1',
+                    username: 'ImBurni',
+                    passwordHash: adminHash,
+                    role: 'Admin',
+                    status: 'aktiv',
+                    registeredAt: new Date().toLocaleDateString('de-DE')
+                });
+                localStorage.setItem('users', JSON.stringify(users));
+            }
         }
-        localStorage.setItem('users', JSON.stringify(users));
-        console.log('📊 Aktuelle Users:', users);
 
-        // Team Infos
+        // Updates initialisieren
+        if (!localStorage.getItem('updates')) {
+            const updates = [
+                {
+                    id: '1',
+                    title: 'Willkommen im Team Portal',
+                    content: 'Hier werden alle wichtigen Updates für das Team veröffentlicht.',
+                    date: new Date().toLocaleDateString('de-DE'),
+                    author: 'ImBurni'
+                }
+            ];
+            localStorage.setItem('updates', JSON.stringify(updates));
+        }
+
+        // Team Info initialisieren
         if (!localStorage.getItem('teamInfo')) {
             const teamInfo = {
                 name: 'Moderations-Team',
-                description: 'Wir sind das offizielle Moderations-Team.',
-                email: 'team@example.com'
+                description: 'Wir sind das offizielle Moderations-Team und kümmern uns um die Sicherheit und Ordnung.',
+                email: 'team@example.com',
+                extra: 'Bei Fragen einfach melden!'
             };
             localStorage.setItem('teamInfo', JSON.stringify(teamInfo));
         }
@@ -552,19 +687,22 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             
+            if (!username || !password) {
+                showLoginMessage('❌ Bitte alles ausfüllen', 'error');
+                return;
+            }
+
             const users = JSON.parse(localStorage.getItem('users'));
             const passwordHash = CryptoJS.SHA256(password).toString();
             const user = users.find(u => u.username === username && u.passwordHash === passwordHash);
 
             if (!user) {
-                document.getElementById('loginMessage').innerHTML = '❌ Falscher Benutzername oder Passwort';
-                document.getElementById('loginMessage').className = 'message error';
+                showLoginMessage('❌ Falscher Benutzername oder Passwort', 'error');
                 return;
             }
 
             if (user.status !== 'aktiv') {
-                document.getElementById('loginMessage').innerHTML = '⏳ Account noch nicht freigeschaltet';
-                document.getElementById('loginMessage').className = 'message error';
+                showLoginMessage('⏳ Account noch nicht freigeschaltet', 'error');
                 return;
             }
 
@@ -576,6 +714,12 @@
             updateHeader();
             loadAllData();
         };
+
+        function showLoginMessage(text, type) {
+            const msg = document.getElementById('loginMessage');
+            msg.innerHTML = text;
+            msg.className = 'message ' + type;
+        }
 
         // ========== REGISTER ==========
         window.handleRegister = function() {
@@ -609,14 +753,11 @@
                 passwordHash: CryptoJS.SHA256(password).toString(),
                 role: 'Moderator',
                 status: 'ausstehend',
-                registeredAt: new Date().toLocaleDateString('de-DE') + ' ' + new Date().toLocaleTimeString('de-DE')
+                registeredAt: new Date().toLocaleDateString('de-DE')
             };
 
             users.push(newUser);
             localStorage.setItem('users', JSON.stringify(users));
-            
-            console.log('✅ Neuer User registriert:', newUser);
-            console.log('📊 Alle Users jetzt:', users);
             
             msgBox.innerHTML = '✅ Registrierung erfolgreich! Admin muss freischalten.';
             msgBox.className = 'message success';
@@ -643,30 +784,58 @@
             const titles = {
                 overview: 'Übersicht',
                 users: 'Nutzerverwaltung',
-                team: 'Team-Infos',
-                editTeam: 'Team bearbeiten'
+                updates: 'Updates verwalten',
+                teaminfo: 'Team-Info verwalten',
+                settings: 'Einstellungen'
             };
             document.getElementById('currentPageTitle').innerHTML = titles[tab];
             
+            // Daten neu laden
             if (tab === 'users') loadUsers();
-            if (tab === 'team') loadTeamInfo();
+            if (tab === 'updates') loadUpdates();
+            if (tab === 'teaminfo') loadTeamInfoForEdit();
         };
 
         // ========== DATEN LADEN ==========
         function loadAllData() {
             loadOverview();
             loadUsers();
-            loadTeamInfo();
+            loadUpdates();
+            loadTeamInfoForEdit();
         }
 
         function loadOverview() {
             const users = JSON.parse(localStorage.getItem('users'));
+            const updates = JSON.parse(localStorage.getItem('updates'));
             const teamInfo = JSON.parse(localStorage.getItem('teamInfo'));
             
-            document.getElementById('totalTeamMembers').innerHTML = users.length;
+            document.getElementById('totalMembers').innerHTML = users.length;
             document.getElementById('pendingMembers').innerHTML = users.filter(u => u.status === 'ausstehend').length;
+            document.getElementById('totalUpdates').innerHTML = updates.length;
             document.getElementById('activeMods').innerHTML = users.filter(u => u.status === 'aktiv' && u.username !== 'ImBurni').length;
-            document.getElementById('totalRegistrations').innerHTML = users.length;
+            
+            // Letzte 3 Updates anzeigen
+            const recentUpdates = updates.slice(0, 3);
+            let updatesHtml = '';
+            recentUpdates.forEach(update => {
+                updatesHtml += `
+                    <div class="update-card">
+                        <div class="update-header">
+                            <span class="update-title">${update.title}</span>
+                            <span class="update-date">${update.date}</span>
+                        </div>
+                        <div class="update-content">${update.content.substring(0, 100)}${update.content.length > 100 ? '...' : ''}</div>
+                    </div>
+                `;
+            });
+            document.getElementById('recentUpdates').innerHTML = updatesHtml || '<p style="color: #718096;">Keine Updates vorhanden</p>';
+            
+            // Team Info Vorschau
+            document.getElementById('teamInfoPreview').innerHTML = `
+                <h4 style="margin-bottom: 10px;">${teamInfo.name}</h4>
+                <p>${teamInfo.description}</p>
+                <p><strong>Kontakt:</strong> ${teamInfo.email}</p>
+            `;
         }
 
         function loadUsers() {
@@ -674,25 +843,23 @@
             const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
             const isAdmin = currentUser && currentUser.username === 'ImBurni';
             
-            console.log('📊 Lade Users für Tabelle:', users);
-            
             let html = '';
             users.forEach(user => {
-                if (user.username === 'ImBurni') return; // Admin nicht in Liste
+                if (user.username === 'ImBurni') return;
                 
                 html += `
                     <tr>
                         <td>${user.username}</td>
                         <td><span class="badge ${user.role === 'Admin' ? 'badge-admin' : 'badge-mod'}">${user.role}</span></td>
                         <td><span class="badge ${user.status === 'aktiv' ? 'badge-active' : 'badge-pending'}">${user.status}</span></td>
-                        <td>${user.registeredAt || 'Unbekannt'}</td>
+                        <td>${user.registeredAt}</td>
                         <td>
                             ${isAdmin ? `
                                 ${user.status === 'ausstehend' ? `
-                                    <button class="btn btn-success" style="padding: 5px 10px; margin-right: 5px;" onclick="approveUser('${user.id}')">✔ Freischalten</button>
-                                    <button class="btn btn-danger" style="padding: 5px 10px;" onclick="rejectUser('${user.id}')">✖ Ablehnen</button>
+                                    <button class="btn btn-success" style="padding: 5px 10px; margin-right: 5px;" onclick="approveUser('${user.id}')">✔</button>
+                                    <button class="btn btn-danger" style="padding: 5px 10px;" onclick="rejectUser('${user.id}')">✖</button>
                                 ` : `
-                                    <button class="btn btn-danger" style="padding: 5px 10px;" onclick="deleteUser('${user.id}')">🗑 Entfernen</button>
+                                    <button class="btn btn-danger" style="padding: 5px 10px;" onclick="deleteUser('${user.id}')">🗑</button>
                                 `}
                             ` : ''}
                         </td>
@@ -707,15 +874,101 @@
             document.getElementById('usersTableBody').innerHTML = html;
         }
 
-        function loadTeamInfo() {
-            const teamInfo = JSON.parse(localStorage.getItem('teamInfo'));
+        function loadUpdates() {
+            const updates = JSON.parse(localStorage.getItem('updates'));
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            const isAdmin = currentUser && currentUser.username === 'ImBurni';
             
-            document.getElementById('teamInfoDisplay').innerHTML = `
-                <h4 style="margin-bottom: 15px;">${teamInfo.name}</h4>
-                <p style="margin-bottom: 15px;">${teamInfo.description}</p>
-                <p><strong>Kontakt:</strong> ${teamInfo.email}</p>
-            `;
+            let html = '';
+            updates.forEach(update => {
+                html += `
+                    <div class="update-card">
+                        <div class="update-header">
+                            <span class="update-title">${update.title}</span>
+                            <span class="update-date">${update.date} · von ${update.author}</span>
+                        </div>
+                        <div class="update-content">${update.content}</div>
+                        ${isAdmin ? `
+                            <div class="update-actions">
+                                <button class="btn btn-danger" style="padding: 5px 15px;" onclick="deleteUpdate('${update.id}')">Löschen</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+            
+            document.getElementById('updatesList').innerHTML = html || '<p style="color: #718096; text-align: center;">Keine Updates vorhanden</p>';
         }
+
+        function loadTeamInfoForEdit() {
+            const teamInfo = JSON.parse(localStorage.getItem('teamInfo'));
+            document.getElementById('teamName').value = teamInfo.name || '';
+            document.getElementById('teamDescription').value = teamInfo.description || '';
+            document.getElementById('teamEmail').value = teamInfo.email || '';
+            document.getElementById('teamExtra').value = teamInfo.extra || '';
+        }
+
+        // ========== UPDATE FUNKTIONEN ==========
+        window.showUpdateModal = function() {
+            document.getElementById('updateModal').classList.add('active');
+        };
+
+        window.closeModal = function() {
+            document.getElementById('updateModal').classList.remove('active');
+            document.getElementById('updateTitle').value = '';
+            document.getElementById('updateContent').value = '';
+        };
+
+        window.createUpdate = function() {
+            const title = document.getElementById('updateTitle').value;
+            const content = document.getElementById('updateContent').value;
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            
+            if (!title || !content) {
+                alert('❌ Bitte Titel und Inhalt ausfüllen');
+                return;
+            }
+            
+            const updates = JSON.parse(localStorage.getItem('updates'));
+            const newUpdate = {
+                id: Date.now().toString(),
+                title: title,
+                content: content,
+                date: new Date().toLocaleDateString('de-DE'),
+                author: currentUser.username
+            };
+            
+            updates.unshift(newUpdate);
+            localStorage.setItem('updates', JSON.stringify(updates));
+            
+            closeModal();
+            loadUpdates();
+            loadOverview();
+        };
+
+        window.deleteUpdate = function(updateId) {
+            if (confirm('Update wirklich löschen?')) {
+                let updates = JSON.parse(localStorage.getItem('updates'));
+                updates = updates.filter(u => u.id !== updateId);
+                localStorage.setItem('updates', JSON.stringify(updates));
+                loadUpdates();
+                loadOverview();
+            }
+        };
+
+        // ========== TEAM INFO FUNKTIONEN ==========
+        window.saveTeamInfo = function() {
+            const teamInfo = {
+                name: document.getElementById('teamName').value,
+                description: document.getElementById('teamDescription').value,
+                email: document.getElementById('teamEmail').value,
+                extra: document.getElementById('teamExtra').value
+            };
+            
+            localStorage.setItem('teamInfo', JSON.stringify(teamInfo));
+            alert('✅ Team-Info gespeichert!');
+            loadOverview();
+        };
 
         // ========== ADMIN FUNKTIONEN ==========
         window.approveUser = function(userId) {
@@ -735,7 +988,7 @@
         };
 
         window.deleteUser = function(userId) {
-            if (confirm('Wirklich löschen?')) {
+            if (confirm('Nutzer wirklich löschen?')) {
                 let users = JSON.parse(localStorage.getItem('users'));
                 users = users.filter(u => u.id !== userId);
                 localStorage.setItem('users', JSON.stringify(users));
@@ -744,14 +997,9 @@
             }
         };
 
-        window.saveTeamInfo = function() {
-            const teamInfo = {
-                name: document.getElementById('teamName').value,
-                description: document.getElementById('teamDescription').value,
-                email: document.getElementById('teamEmail').value
-            };
-            localStorage.setItem('teamInfo', JSON.stringify(teamInfo));
-            alert('✅ Team Info gespeichert!');
+        // ========== SETTINGS ==========
+        window.saveSettings = function() {
+            alert('✅ Einstellungen gespeichert!');
         };
 
         // ========== HELPER ==========
@@ -778,8 +1026,8 @@
             sessionStorage.removeItem('currentUser');
             document.getElementById('dashboard').classList.add('hidden');
             document.getElementById('loginPage').classList.remove('hidden');
-            document.getElementById('username').value = 'ImBurni';
-            document.getElementById('password').value = 'admin123';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
         };
 
         // ========== SESSION CHECK ==========
@@ -791,7 +1039,13 @@
             loadAllData();
         }
 
-        console.log('✅ Seite geladen - Admin: ImBurni / admin123');
+        // Enter-Taste für Login
+        document.getElementById('password').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+
+        console.log('✅ Team Portal geladen');
+        console.log('Admin: ImBurni / Passwort: admin123');
     </script>
 </body>
 </html>
