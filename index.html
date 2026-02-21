@@ -3,654 +3,458 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moderations-Team · Admin Panel</title>
+    <title>Admin Panel · Sicher</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: Arial, sans-serif;
         }
-
+        
         body {
-            background: #0c0c0f;
-            min-height: 100vh;
+            background: #1a1a1a;
             display: flex;
-            align-items: center;
             justify-content: center;
-            padding: 1.5rem;
-        }
-
-        /* Hauptcontainer */
-        .app {
-            width: 100%;
-            max-width: 1200px;
-            background: #0f0f12;
-            border-radius: 40px;
-            border: 1px solid #22222a;
-            overflow: hidden;
-            box-shadow: 0 30px 60px -20px #00000080;
-        }
-
-        /* Header für alle Ansichten */
-        .header {
-            background: #0a0a0c;
-            padding: 1.5rem 2.5rem;
-            border-bottom: 1px solid #22222a;
-            display: flex;
             align-items: center;
-            justify-content: space-between;
+            min-height: 100vh;
+            padding: 20px;
         }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        
+        .container {
+            background: #2d2d2d;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 400px;
         }
-
-        .logo-badge {
-            background: #ff4d4d;
+        
+        .admin-container {
+            background: #2d2d2d;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 800px;
+            max-width: 100%;
+        }
+        
+        h2 {
             color: white;
-            font-weight: 700;
-            font-size: 0.8rem;
-            padding: 0.3rem 1rem;
-            border-radius: 100px;
-            letter-spacing: 0.3px;
+            margin-bottom: 1.5rem;
+            text-align: center;
         }
-
-        .logo h1 {
-            color: white;
-            font-weight: 500;
-            font-size: 1.5rem;
-        }
-
-        /* Login Container */
-        .auth-container {
-            max-width: 440px;
-            margin: 3rem auto;
-            background: #151518;
-            border-radius: 32px;
-            padding: 2.5rem;
-            border: 1px solid #25252d;
-        }
-
-        .auth-title {
-            color: white;
-            font-size: 1.8rem;
-            font-weight: 500;
-            margin-bottom: 2rem;
-        }
-
-        .input-group {
-            margin-bottom: 1.2rem;
-        }
-
-        .input-group label {
-            display: block;
-            color: #9f9fa8;
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        .input-group input {
+        
+        input {
             width: 100%;
-            background: #0c0c10;
-            border: 1px solid #2a2a33;
-            border-radius: 20px;
-            padding: 1rem 1.5rem;
+            padding: 12px;
+            margin: 8px 0;
+            background: #3d3d3d;
+            border: 1px solid #4d4d4d;
             color: white;
-            font-size: 1rem;
-            transition: all 0.2s;
+            border-radius: 5px;
+            font-size: 16px;
         }
-
-        .input-group input:focus {
-            outline: none;
-            border-color: #9147ff;
-            box-shadow: 0 0 0 4px #9147ff20;
-        }
-
-        .btn {
-            background: #9147ff;
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #007bff;
             color: white;
             border: none;
-            padding: 1rem;
-            width: 100%;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 1.1rem;
+            border-radius: 5px;
             cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 1rem;
+            margin: 5px 0;
+            font-size: 16px;
         }
-
-        .btn:hover {
-            background: #772ce8;
-            transform: scale(1.01);
+        
+        button:hover {
+            background: #0056b3;
         }
-
-        .btn-secondary {
-            background: transparent;
-            border: 1px solid #2a2a33;
-            color: #cfcfda;
-            margin-top: 0.8rem;
-        }
-
-        .btn-secondary:hover {
-            background: #1f1f27;
-            border-color: #9147ff;
-            color: white;
-        }
-
-        .message {
-            text-align: center;
-            margin-top: 1.5rem;
-            padding: 0.8rem;
-            border-radius: 16px;
-            font-weight: 500;
-        }
-
-        .message-error {
-            background: #ff4d4d15;
-            color: #ff6b6b;
-            border: 1px solid #ff4d4d30;
-        }
-
-        .message-success {
-            background: #4dff4d10;
-            color: #6bff6b;
-            border: 1px solid #4dff4d30;
-        }
-
+        
         .hidden {
             display: none !important;
         }
-
-        /* Admin Dashboard */
-        .dashboard {
-            padding: 2rem;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: #151518;
-            border-radius: 24px;
-            padding: 1.5rem;
-            border: 1px solid #25252d;
-        }
-
-        .stat-label {
-            color: #8f8f9a;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .stat-number {
-            color: white;
-            font-size: 2.5rem;
-            font-weight: 600;
-            margin-top: 0.3rem;
-        }
-
-        .users-table {
-            background: #151518;
-            border-radius: 28px;
-            border: 1px solid #25252d;
-            overflow: hidden;
-        }
-
-        .table-header {
-            display: grid;
-            grid-template-columns: 2fr 1.2fr 1.5fr 1.5fr;
-            padding: 1.2rem 1.8rem;
-            background: #0c0c10;
-            color: #a0a0ab;
-            font-weight: 600;
-            font-size: 0.9rem;
-            border-bottom: 1px solid #25252d;
-        }
-
+        
         .user-row {
             display: grid;
-            grid-template-columns: 2fr 1.2fr 1.5fr 1.5fr;
-            padding: 1.2rem 1.8rem;
-            align-items: center;
-            border-bottom: 1px solid #25252d;
-        }
-
-        .user-name {
+            grid-template-columns: 2fr 1fr 1fr 2fr;
+            padding: 12px;
+            background: #3d3d3d;
+            margin: 5px 0;
             color: white;
-            font-weight: 500;
-            font-size: 1.1rem;
+            border-radius: 5px;
+            align-items: center;
         }
-
-        .role-badge {
-            display: inline-block;
-            padding: 0.4rem 1rem;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            width: fit-content;
+        
+        .header-row {
+            background: #4d4d4d;
+            font-weight: bold;
         }
-
-        .role-admin {
-            background: #ff4d4d20;
-            color: #ff6b6b;
-            border: 1px solid #ff4d4d40;
-        }
-
-        .role-mod {
-            background: #4d7fff20;
-            color: #6b9bff;
-            border: 1px solid #4d7fff40;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 0.4rem 1rem;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            width: fit-content;
-        }
-
-        .status-active {
-            background: #4dff4d20;
-            color: #6bff6b;
-            border: 1px solid #4dff4d40;
-        }
-
-        .status-pending {
-            background: #ffaa4d20;
-            color: #ffb86b;
-            border: 1px solid #ffaa4d40;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-        }
-
-        .action-btn {
-            padding: 0.6rem 1.2rem;
-            border-radius: 40px;
-            border: none;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-        }
-
+        
         .btn-approve {
-            background: #4dff4d20;
-            color: #4dff4d;
-            border: 1px solid #4dff4d40;
+            background: #28a745;
+            padding: 6px 12px;
+            width: auto;
+            margin-right: 5px;
+            font-size: 14px;
         }
-
+        
         .btn-reject {
-            background: #ff4d4d20;
-            color: #ff4d4d;
-            border: 1px solid #ff4d4d40;
+            background: #dc3545;
+            padding: 6px 12px;
+            width: auto;
+            font-size: 14px;
         }
-
-        .btn-delete {
-            background: #ffaa4d20;
-            color: #ffaa4d;
-            border: 1px solid #ffaa4d40;
+        
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
         }
-
-        .admin-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .admin-info span {
+        
+        .stat-box {
+            background: #3d3d3d;
+            padding: 15px;
+            border-radius: 5px;
             color: white;
-            font-weight: 500;
-        }
-
-        .logout-btn {
-            background: #25252d;
-            color: white;
-            border: none;
-            padding: 0.6rem 1.8rem;
-            border-radius: 40px;
-            font-weight: 500;
-            cursor: pointer;
-        }
-
-        .empty-state {
-            padding: 3rem;
             text-align: center;
-            color: #7a7a85;
+        }
+        
+        .stat-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #007bff;
+            margin-top: 5px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .logout-btn {
+            background: #dc3545;
+            width: auto;
+            padding: 8px 20px;
+        }
+        
+        .message {
+            color: #ff6b6b;
+            text-align: center;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .success {
+            color: #28a745;
+        }
+
+        .admin-badge {
+            background: #ff4d4d;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            margin-left: 5px;
         }
     </style>
-    <!-- SHA256 Hashing Bibliothek -->
+    <!-- SHA256 Bibliothek -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </head>
 <body>
-    <div class="app">
-        <!-- HEADER -->
+    <!-- LOGIN -->
+    <div id="loginPage" class="container">
+        <h2>🔐 Admin Login</h2>
+        <input type="text" id="username" placeholder="Benutzername">
+        <input type="password" id="password" placeholder="Passwort">
+        <button onclick="login()">Einloggen</button>
+        <button onclick="showRegister()" style="background: #6c757d;">Registrieren</button>
+        <div id="loginMessage" class="message"></div>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="registerPage" class="container hidden">
+        <h2>📝 Registrieren</h2>
+        <input type="text" id="regUsername" placeholder="Benutzername">
+        <input type="password" id="regPassword" placeholder="Passwort">
+        <button onclick="register()">Registrieren</button>
+        <button onclick="backToLogin()" style="background: #6c757d;">Zurück</button>
+        <div id="registerMessage" class="message"></div>
+    </div>
+
+    <!-- ADMIN DASHBOARD -->
+    <div id="adminPage" class="admin-container hidden">
         <div class="header">
-            <div class="logo">
-                <span class="logo-badge">MOD TEAM</span>
-                <h1>Admin Portal</h1>
+            <h2>👥 Nutzerverwaltung <span id="userRole"></span></h2>
+            <button class="logout-btn" onclick="logout()">Abmelden</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div>Gesamt</div>
+                <div class="stat-number" id="totalStats">0</div>
             </div>
-            <div id="headerAdminInfo" class="admin-info hidden">
-                <span id="headerUserName"></span>
-                <button class="logout-btn" id="logoutBtn">Abmelden</button>
+            <div class="stat-box">
+                <div>Ausstehend</div>
+                <div class="stat-number" id="pendingStats">0</div>
+            </div>
+            <div class="stat-box">
+                <div>Aktiv</div>
+                <div class="stat-number" id="activeStats">0</div>
             </div>
         </div>
 
-        <!-- LOGIN VIEW -->
-        <div id="loginView">
-            <div class="auth-container">
-                <h2 class="auth-title">🔐 Willkommen zurück</h2>
-                
-                <div class="input-group">
-                    <label>Benutzername</label>
-                    <input type="text" id="loginUsername" placeholder="z.B. ImBurni" value="ImBurni">
-                </div>
-                
-                <div class="input-group">
-                    <label>Passwort</label>
-                    <input type="password" id="loginPassword" placeholder="••••••••" value="Admin123!">
-                </div>
-
-                <button class="btn" id="loginBtn">Einloggen</button>
-                <button class="btn btn-secondary" id="showRegisterBtn">Neu hier? Registrieren</button>
-
-                <div id="loginMessage" class="message hidden"></div>
-            </div>
+        <div class="user-row header-row">
+            <div>Benutzername</div>
+            <div>Rolle</div>
+            <div>Status</div>
+            <div>Aktionen</div>
         </div>
-
-        <!-- REGISTER VIEW -->
-        <div id="registerView" class="hidden">
-            <div class="auth-container">
-                <h2 class="auth-title">📝 Registrieren</h2>
-                
-                <div class="input-group">
-                    <label>Benutzername</label>
-                    <input type="text" id="registerUsername" placeholder="Dein Name">
-                </div>
-                
-                <div class="input-group">
-                    <label>Passwort</label>
-                    <input type="password" id="registerPassword" placeholder="Mind. 4 Zeichen">
-                </div>
-
-                <button class="btn" id="registerBtn">Registrieren</button>
-                <button class="btn btn-secondary" id="backToLoginBtn">Zurück zum Login</button>
-
-                <div id="registerMessage" class="message hidden"></div>
-            </div>
-        </div>
-
-        <!-- ADMIN DASHBOARD -->
-        <div id="adminView" class="dashboard hidden">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Gesamt Nutzer</div>
-                    <div class="stat-number" id="totalUsers">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Ausstehend</div>
-                    <div class="stat-number" id="pendingUsers">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Aktiv</div>
-                    <div class="stat-number" id="activeUsers">0</div>
-                </div>
-            </div>
-
-            <div class="users-table">
-                <div class="table-header">
-                    <div>Benutzer</div>
-                    <div>Rolle</div>
-                    <div>Status</div>
-                    <div>Aktionen</div>
-                </div>
-                <div id="usersList"></div>
-            </div>
-        </div>
+        <div id="userList"></div>
     </div>
 
     <script>
-        // ==================== FIX: LOCALSTORAGE ZURÜCKSETZEN ====================
-        // Damit der Admin sicher funktioniert, löschen wir erstmal alles
-        localStorage.removeItem('mod_users');
-        sessionStorage.removeItem('currentUser');
+        // ========== SICHERE VERSION MIT HASH ==========
+        
+        // WICHTIG: So wird der Admin-Hash EINMALIG generiert
+        const ADMIN_HASH = CryptoJS.SHA256('admin123').toString();
+        console.log('Admin Hash:', ADMIN_HASH); // Zum Prüfen in Konsole (F12)
+        
+        // Datenbank initialisieren (nur 1x)
+        if (!localStorage.getItem('secure_users')) {
+            const initialUsers = [
+                {
+                    id: '1',
+                    username: 'ImBurni',
+                    passwordHash: ADMIN_HASH,  // Hier ist der Hash gespeichert!
+                    role: 'Admin',
+                    status: 'aktiv'
+                }
+            ];
+            localStorage.setItem('secure_users', JSON.stringify(initialUsers));
+            console.log('✅ Admin wurde angelegt');
+        }
 
-        // ==================== ADMIN DATEN ====================
-        const ADMIN_USERNAME = 'ImBurni';
-        const ADMIN_PASSWORD = 'Admin123!';
-        
-        // Hash generieren
-        const ADMIN_HASH = CryptoJS.SHA256(ADMIN_PASSWORD).toString();
-        
-        // Users neu anlegen
-        let users = [
-            {
-                id: '1',
-                username: 'ImBurni',
-                passwordHash: ADMIN_HASH,
-                role: 'Admin',
-                status: 'aktiv'
-            }
-        ];
-        
-        // Sofort speichern
-        localStorage.setItem('mod_users', JSON.stringify(users));
-        
-        console.log('✅ Admin wurde neu angelegt:');
-        console.log('Username:', ADMIN_USERNAME);
-        console.log('Password:', ADMIN_PASSWORD);
-        console.log('Hash:', ADMIN_HASH);
+        // ========== HILFSFUNKTIONEN ==========
+        function hashPassword(password) {
+            return CryptoJS.SHA256(password).toString();
+        }
 
-        // ==================== LOGIN FUNKTION ====================
-        document.getElementById('loginBtn').addEventListener('click', function() {
-            const username = document.getElementById('loginUsername').value.trim();
-            const password = document.getElementById('loginPassword').value;
+        function getUsers() {
+            return JSON.parse(localStorage.getItem('secure_users')) || [];
+        }
+
+        function saveUsers(users) {
+            localStorage.setItem('secure_users', JSON.stringify(users));
+        }
+
+        // ========== LOGIN ==========
+        window.login = function() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const msgBox = document.getElementById('loginMessage');
             
-            console.log('Login-Versuch mit:', username, password);
+            console.log('Login mit:', username);
             
             if (!username || !password) {
-                showMessage('❌ Bitte alles ausfüllen', false);
+                msgBox.innerHTML = '❌ Bitte alles ausfüllen';
                 return;
             }
 
-            // Users neu laden (sicherheitshalber)
-            users = JSON.parse(localStorage.getItem('mod_users'));
-            console.log('Aktuelle Users:', users);
-
-            // Passwort hashen
-            const passwordHash = CryptoJS.SHA256(password).toString();
-            console.log('Gehashtes Passwort:', passwordHash);
+            const users = getUsers();
+            const passwordHash = hashPassword(password);
+            
+            console.log('Password Hash:', passwordHash);
             
             // User suchen
             const user = users.find(u => u.username === username);
-            console.log('Gefundener User:', user);
             
             if (!user) {
-                showMessage('❌ Falscher Benutzername oder Passwort', false);
+                msgBox.innerHTML = '❌ Benutzer nicht gefunden';
                 return;
             }
-
-            // Hash vergleichen
+            
+            console.log('Gespeicherter Hash:', user.passwordHash);
+            console.log('Vergleich:', user.passwordHash === passwordHash ? '✅' : '❌');
+            
             if (user.passwordHash !== passwordHash) {
-                console.log('Hash-Vergleich fehlgeschlagen:');
-                console.log('Gespeichert:', user.passwordHash);
-                console.log('Eingegeben:', passwordHash);
-                showMessage('❌ Falscher Benutzername oder Passwort', false);
+                msgBox.innerHTML = '❌ Falsches Passwort';
                 return;
             }
-
+            
             if (user.status !== 'aktiv') {
-                showMessage('⏳ Account noch nicht freigeschaltet', false);
+                msgBox.innerHTML = '⏳ Account noch nicht freigeschaltet';
                 return;
             }
-
+            
             // Erfolgreich eingeloggt
-            console.log('✅ Login erfolgreich!');
-            currentUser = {
+            currentUser = user;
+            sessionStorage.setItem('currentUser', JSON.stringify({
                 id: user.id,
                 username: user.username,
                 role: user.role
-            };
-            
-            sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+            }));
             
             // UI umschalten
-            document.getElementById('loginView').classList.add('hidden');
-            document.getElementById('adminView').classList.remove('hidden');
-            document.getElementById('headerAdminInfo').classList.remove('hidden');
-            document.getElementById('headerUserName').innerHTML = `👤 ${currentUser.username} · ${currentUser.role}`;
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('adminPage').classList.remove('hidden');
+            document.getElementById('userRole').innerHTML = `(${user.role})`;
             
-            renderUserTable();
-        });
+            loadUsers();
+        };
 
-        // ==================== HILFSFUNKTION ====================
-        function showMessage(text, isSuccess = false) {
-            const msgEl = document.getElementById('loginMessage');
-            msgEl.textContent = text;
-            msgEl.className = 'message ' + (isSuccess ? 'message-success' : 'message-error');
-            msgEl.classList.remove('hidden');
+        // ========== REGISTRIERUNG ==========
+        window.register = function() {
+            const username = document.getElementById('regUsername').value;
+            const password = document.getElementById('regPassword').value;
+            const msgBox = document.getElementById('registerMessage');
             
-            setTimeout(() => {
-                msgEl.classList.add('hidden');
-            }, 3000);
-        }
+            if (!username || !password) {
+                msgBox.innerHTML = '❌ Bitte alles ausfüllen';
+                return;
+            }
+            
+            if (password.length < 4) {
+                msgBox.innerHTML = '❌ Passwort zu kurz (min. 4 Zeichen)';
+                return;
+            }
+            
+            const users = getUsers();
+            
+            // Prüfen ob schon existiert
+            if (users.find(u => u.username === username)) {
+                msgBox.innerHTML = '❌ Benutzername bereits vergeben';
+                return;
+            }
+            
+            // Neuen User mit GEHASHTEM Passwort
+            const newUser = {
+                id: Date.now().toString(),
+                username: username,
+                passwordHash: hashPassword(password), // NUR der Hash wird gespeichert!
+                role: 'Moderator',
+                status: 'ausstehend'
+            };
+            
+            users.push(newUser);
+            saveUsers(users);
+            
+            msgBox.style.color = '#28a745';
+            msgBox.innerHTML = '✅ Registriert! Admin muss freischalten';
+            
+            // Felder leeren
+            document.getElementById('regUsername').value = '';
+            document.getElementById('regPassword').value = '';
+            
+            setTimeout(backToLogin, 2000);
+        };
 
-        // ==================== USER TABELLE ====================
-        function renderUserTable() {
-            users = JSON.parse(localStorage.getItem('mod_users'));
+        // ========== ADMIN FUNKTIONEN ==========
+        window.approveUser = function(id) {
+            let users = getUsers();
+            users = users.map(u => {
+                if (u.id == id) {
+                    return {...u, status: 'aktiv'};
+                }
+                return u;
+            });
+            saveUsers(users);
+            loadUsers();
+        };
+
+        window.rejectUser = function(id) {
+            let users = getUsers();
+            users = users.filter(u => u.id != id);
+            saveUsers(users);
+            loadUsers();
+        };
+
+        window.deleteUser = function(id) {
+            let users = getUsers();
+            users = users.filter(u => u.id != id);
+            saveUsers(users);
+            loadUsers();
+        };
+
+        function loadUsers() {
+            const users = getUsers();
             const normalUsers = users.filter(u => u.username !== 'ImBurni');
             
             // Stats
-            document.getElementById('totalUsers').textContent = normalUsers.length;
-            document.getElementById('pendingUsers').textContent = normalUsers.filter(u => u.status === 'ausstehend').length;
-            document.getElementById('activeUsers').textContent = normalUsers.filter(u => u.status === 'aktiv').length;
-
-            // Tabelle
+            document.getElementById('totalStats').innerHTML = normalUsers.length;
+            document.getElementById('pendingStats').innerHTML = normalUsers.filter(u => u.status === 'ausstehend').length;
+            document.getElementById('activeStats').innerHTML = normalUsers.filter(u => u.status === 'aktiv').length;
+            
+            // User-Liste
             let html = '';
             normalUsers.forEach(user => {
                 html += `
                     <div class="user-row">
-                        <div class="user-name">${user.username}</div>
-                        <div><span class="role-badge role-mod">Moderator</span></div>
-                        <div><span class="status-badge ${user.status === 'aktiv' ? 'status-active' : 'status-pending'}">${user.status === 'aktiv' ? 'Aktiv' : 'Ausstehend'}</span></div>
-                        <div class="action-buttons">
+                        <div>${user.username}</div>
+                        <div>${user.role} ${user.role === 'Admin' ? '<span class="admin-badge">Admin</span>' : ''}</div>
+                        <div style="color: ${user.status === 'aktiv' ? '#28a745' : '#ffc107'}">${user.status}</div>
+                        <div>
                             ${user.status === 'ausstehend' ? `
-                                <button class="action-btn btn-approve" onclick="approveUser('${user.id}')">✔ Freischalten</button>
-                                <button class="action-btn btn-reject" onclick="rejectUser('${user.id}')">✖ Ablehnen</button>
+                                <button class="btn-approve" onclick="approveUser('${user.id}')">✔ Freischalten</button>
+                                <button class="btn-reject" onclick="rejectUser('${user.id}')">✖ Ablehnen</button>
                             ` : `
-                                <button class="action-btn btn-delete" onclick="deleteUser('${user.id}')">🗑 Entfernen</button>
+                                <button class="btn-reject" onclick="deleteUser('${user.id}')">🗑 Entfernen</button>
                             `}
                         </div>
                     </div>
                 `;
             });
-
-            document.getElementById('usersList').innerHTML = html || '<div class="empty-state">✨ Noch keine registrierten Nutzer</div>';
+            
+            if (normalUsers.length === 0) {
+                html = '<div style="color: white; text-align: center; padding: 20px;">📭 Keine registrierten Nutzer</div>';
+            }
+            
+            document.getElementById('userList').innerHTML = html;
         }
 
-        // ==================== ADMIN FUNKTIONEN ====================
-        window.approveUser = function(userId) {
-            users = users.map(u => {
-                if (u.id == userId) return {...u, status: 'aktiv'};
-                return u;
-            });
-            localStorage.setItem('mod_users', JSON.stringify(users));
-            renderUserTable();
+        // ========== UI FUNKTIONEN ==========
+        window.showRegister = function() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('registerPage').classList.remove('hidden');
         };
 
-        window.rejectUser = function(userId) {
-            users = users.filter(u => u.id != userId);
-            localStorage.setItem('mod_users', JSON.stringify(users));
-            renderUserTable();
+        window.backToLogin = function() {
+            document.getElementById('registerPage').classList.add('hidden');
+            document.getElementById('loginPage').classList.remove('hidden');
         };
 
-        window.deleteUser = function(userId) {
-            users = users.filter(u => u.id != userId);
-            localStorage.setItem('mod_users', JSON.stringify(users));
-            renderUserTable();
-        };
-
-        // ==================== REGISTRIERUNG ====================
-        document.getElementById('showRegisterBtn').addEventListener('click', () => {
-            document.getElementById('loginView').classList.add('hidden');
-            document.getElementById('registerView').classList.remove('hidden');
-        });
-
-        document.getElementById('backToLoginBtn').addEventListener('click', () => {
-            document.getElementById('registerView').classList.add('hidden');
-            document.getElementById('loginView').classList.remove('hidden');
-        });
-
-        document.getElementById('registerBtn').addEventListener('click', () => {
-            const username = document.getElementById('registerUsername').value.trim();
-            const password = document.getElementById('registerPassword').value;
-
-            if (!username || !password) {
-                document.getElementById('registerMessage').textContent = '❌ Bitte alles ausfüllen';
-                document.getElementById('registerMessage').className = 'message message-error';
-                document.getElementById('registerMessage').classList.remove('hidden');
-                return;
-            }
-
-            users = JSON.parse(localStorage.getItem('mod_users'));
-            
-            if (users.some(u => u.username === username)) {
-                document.getElementById('registerMessage').textContent = '❌ Benutzername bereits vergeben';
-                document.getElementById('registerMessage').className = 'message message-error';
-                document.getElementById('registerMessage').classList.remove('hidden');
-                return;
-            }
-
-            const newUser = {
-                id: Date.now().toString(),
-                username: username,
-                passwordHash: CryptoJS.SHA256(password).toString(),
-                role: 'Moderator',
-                status: 'ausstehend'
-            };
-
-            users.push(newUser);
-            localStorage.setItem('mod_users', JSON.stringify(users));
-
-            document.getElementById('registerMessage').textContent = '✅ Registrierung erfolgreich! Admin muss freischalten.';
-            document.getElementById('registerMessage').className = 'message message-success';
-            document.getElementById('registerMessage').classList.remove('hidden');
-            
-            setTimeout(() => {
-                document.getElementById('registerView').classList.add('hidden');
-                document.getElementById('loginView').classList.remove('hidden');
-            }, 2000);
-        });
-
-        // ==================== LOGOUT ====================
-        document.getElementById('logoutBtn').addEventListener('click', () => {
+        window.logout = function() {
             sessionStorage.removeItem('currentUser');
-            document.getElementById('adminView').classList.add('hidden');
-            document.getElementById('loginView').classList.remove('hidden');
-            document.getElementById('headerAdminInfo').classList.add('hidden');
-        });
+            document.getElementById('adminPage').classList.add('hidden');
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        };
 
-        // ==================== ENTER-TASTE ====================
-        document.getElementById('loginPassword').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                document.getElementById('loginBtn').click();
+        // ========== SESSION CHECK ==========
+        let currentUser = null;
+        const savedUser = sessionStorage.getItem('currentUser');
+        
+        if (savedUser) {
+            currentUser = JSON.parse(savedUser);
+            if (currentUser.username === 'ImBurni') {
+                document.getElementById('loginPage').classList.add('hidden');
+                document.getElementById('adminPage').classList.remove('hidden');
+                document.getElementById('userRole').innerHTML = `(${currentUser.role})`;
+                loadUsers();
             }
+        }
+
+        // Enter-Taste
+        document.getElementById('password').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') login();
         });
 
-        console.log('✅ Seite geladen - Admin: ImBurni / Admin123!');
+        console.log('✅ Seite geladen');
+        console.log('Admin: ImBurni / Passwort: admin123');
     </script>
 </body>
 </html>
