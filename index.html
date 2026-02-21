@@ -18,7 +18,7 @@
             padding: 20px;
         }
         
-        /* Container */
+        /* Login Box */
         .login-box {
             background: white;
             padding: 2.5rem;
@@ -233,7 +233,7 @@
             color: #2d3748;
         }
         
-        /* Badges */
+        /* Badges/Labels */
         .badge {
             padding: 5px 12px;
             border-radius: 20px;
@@ -260,6 +260,47 @@
         .badge-pending {
             background: #feebc8;
             color: #7b341e;
+        }
+        
+        /* Status Labels für Forum */
+        .label-inarbeit {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .label-abgelehnt {
+            background: #f56565;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .label-abgeschlossen {
+            background: #48bb78;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .label-default {
+            background: #cbd5e0;
+            color: #2d3748;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
         }
         
         /* Forms */
@@ -289,45 +330,125 @@
             resize: vertical;
         }
         
-        /* Update Cards */
-        .update-card {
-            background: #f7fafc;
-            border-radius: 10px;
+        /* Forum Cards */
+        .forum-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
             padding: 20px;
             margin-bottom: 15px;
-            border-left: 4px solid #667eea;
+            transition: all 0.3s;
         }
         
-        .update-header {
+        .forum-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .forum-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
         
-        .update-title {
+        .forum-title {
             font-size: 18px;
             font-weight: 600;
             color: #2d3748;
         }
         
-        .update-date {
+        .forum-meta {
+            display: flex;
+            gap: 15px;
             color: #718096;
-            font-size: 12px;
+            font-size: 13px;
+            margin-bottom: 10px;
         }
         
-        .update-content {
+        .forum-content {
             color: #4a5568;
             line-height: 1.6;
+            margin-bottom: 15px;
         }
         
-        .update-actions {
-            margin-top: 10px;
+        .forum-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .forum-actions {
             display: flex;
             gap: 10px;
         }
         
-        /* Modal */
+        .comment-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 10px;
+        }
+        
+        .comment {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .comment:last-child {
+            border-bottom: none;
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        
+        .comment-author {
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .comment-date {
+            color: #718096;
+        }
+        
+        .comment-text {
+            color: #4a5568;
+        }
+        
+        /* Filter Bar */
+        .filter-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 8px 20px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn:hover {
+            border-color: #667eea;
+        }
+        
+        .filter-btn.active {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+        
         .modal {
             display: none;
             position: fixed;
@@ -351,6 +472,8 @@
             padding: 30px;
             width: 500px;
             max-width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
         }
         
         .modal-header {
@@ -374,7 +497,6 @@
             display: none !important;
         }
         
-        /* Message */
         .message {
             text-align: center;
             margin-top: 15px;
@@ -390,26 +512,6 @@
         .success {
             background: #c6f6d5;
             color: #22543d;
-        }
-        
-        /* Team Info Display */
-        .team-info-box {
-            background: #ebf4ff;
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 30px;
-        }
-        
-        .team-info-box h4 {
-            color: #2d3748;
-            margin-bottom: 15px;
-            font-size: 20px;
-        }
-        
-        .team-info-box p {
-            color: #4a5568;
-            line-height: 1.6;
-            margin-bottom: 10px;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
@@ -446,17 +548,17 @@
                 <div class="menu-item active" onclick="switchTab('overview', this)">
                     📊 Übersicht
                 </div>
+                <div class="menu-item" onclick="switchTab('forum', this)">
+                    💬 Forum
+                </div>
                 <div class="menu-item" onclick="switchTab('users', this)">
                     👥 Nutzerverwaltung
                 </div>
                 <div class="menu-item" onclick="switchTab('updates', this)">
-                    📢 Updates verwalten
+                    📢 Updates
                 </div>
                 <div class="menu-item" onclick="switchTab('teaminfo', this)">
-                    ℹ️ Team-Info verwalten
-                </div>
-                <div class="menu-item" onclick="switchTab('settings', this)">
-                    ⚙️ Einstellungen
+                    ℹ️ Team-Info
                 </div>
             </div>
         </div>
@@ -477,39 +579,51 @@
             <div id="overviewTab" class="tab-content">
                 <div class="stats-grid">
                     <div class="stat-card">
+                        <h4>Forum Beiträge</h4>
+                        <div class="number" id="totalPosts">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>In Arbeit</h4>
+                        <div class="number" id="inProgressCount">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Abgeschlossen</h4>
+                        <div class="number" id="completedCount">0</div>
+                    </div>
+                    <div class="stat-card">
                         <h4>Team Mitglieder</h4>
                         <div class="number" id="totalMembers">0</div>
                     </div>
-                    <div class="stat-card">
-                        <h4>Ausstehend</h4>
-                        <div class="number" id="pendingMembers">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h4>Updates</h4>
-                        <div class="number" id="totalUpdates">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h4>Aktive Mods</h4>
-                        <div class="number" id="activeMods">0</div>
-                    </div>
                 </div>
 
-                <!-- Neueste Updates Vorschau -->
+                <!-- Letzte Forum Beiträge -->
                 <div class="content-card">
                     <div class="card-header">
-                        <h3>📢 Letzte Updates</h3>
-                        <button class="btn btn-primary" onclick="switchTab('updates', document.querySelectorAll('.menu-item')[2])">Alle anzeigen</button>
+                        <h3>💬 Letzte Forum Beiträge</h3>
+                        <button class="btn btn-primary" onclick="switchTab('forum', document.querySelectorAll('.menu-item')[1])">Zum Forum</button>
                     </div>
-                    <div id="recentUpdates"></div>
+                    <div id="recentPosts"></div>
                 </div>
+            </div>
 
-                <!-- Team Info Vorschau -->
+            <!-- Forum Tab -->
+            <div id="forumTab" class="tab-content hidden">
                 <div class="content-card">
                     <div class="card-header">
-                        <h3>ℹ️ Team Information</h3>
-                        <button class="btn btn-primary" onclick="switchTab('teaminfo', document.querySelectorAll('.menu-item')[3])">Bearbeiten</button>
+                        <h3>💬 Team Forum</h3>
+                        <button class="btn btn-success" onclick="showNewPostModal()">+ Neuer Beitrag</button>
                     </div>
-                    <div id="teamInfoPreview"></div>
+
+                    <!-- Filter Buttons -->
+                    <div class="filter-bar">
+                        <button class="filter-btn active" onclick="filterForum('all', this)">Alle</button>
+                        <button class="filter-btn" onclick="filterForum('In Arbeit', this)">In Arbeit</button>
+                        <button class="filter-btn" onclick="filterForum('Abgelehnt', this)">Abgelehnt</button>
+                        <button class="filter-btn" onclick="filterForum('Abgeschlossen', this)">Abgeschlossen</button>
+                    </div>
+
+                    <!-- Forum Posts -->
+                    <div id="forumPosts"></div>
                 </div>
             </div>
 
@@ -538,7 +652,7 @@
             <div id="updatesTab" class="tab-content hidden">
                 <div class="content-card">
                     <div class="card-header">
-                        <h3>📢 Updates verwalten</h3>
+                        <h3>📢 Updates</h3>
                         <button class="btn btn-success" onclick="showUpdateModal()">+ Neues Update</button>
                     </div>
                     <div id="updatesList"></div>
@@ -549,7 +663,7 @@
             <div id="teaminfoTab" class="tab-content hidden">
                 <div class="content-card">
                     <div class="card-header">
-                        <h3>ℹ️ Team-Info bearbeiten</h3>
+                        <h3>ℹ️ Team-Info</h3>
                     </div>
                     
                     <div class="form-group">
@@ -567,34 +681,63 @@
                         <input type="email" id="teamEmail" placeholder="team@example.com">
                     </div>
                     
-                    <div class="form-group">
-                        <label>Weitere Informationen</label>
-                        <textarea id="teamExtra" placeholder="Zusätzliche Infos..."></textarea>
-                    </div>
-                    
                     <button class="btn btn-success" onclick="saveTeamInfo()">Team-Info speichern</button>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Settings Tab -->
-            <div id="settingsTab" class="tab-content hidden">
-                <div class="content-card">
-                    <div class="card-header">
-                        <h3>⚙️ Einstellungen</h3>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Website Titel</label>
-                        <input type="text" id="siteTitle" value="Team Portal">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Admin Email</label>
-                        <input type="email" id="adminEmail" value="admin@example.com">
-                    </div>
-                    
-                    <button class="btn btn-primary" onclick="saveSettings()">Einstellungen speichern</button>
+    <!-- New Post Modal -->
+    <div id="newPostModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Neuen Forum Beitrag erstellen</h3>
+                <span class="close" onclick="closeModal('newPostModal')">&times;</span>
+            </div>
+            
+            <div class="form-group">
+                <label>Titel</label>
+                <input type="text" id="postTitle" placeholder="Titel des Beitrags">
+            </div>
+            
+            <div class="form-group">
+                <label>Status</label>
+                <select id="postStatus">
+                    <option value="In Arbeit">In Arbeit</option>
+                    <option value="Abgelehnt">Abgelehnt</option>
+                    <option value="Abgeschlossen">Abgeschlossen</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Inhalt</label>
+                <textarea id="postContent" placeholder="Schreibe deinen Beitrag..."></textarea>
+            </div>
+            
+            <button class="btn btn-success" onclick="createPost()">Beitrag erstellen</button>
+        </div>
+    </div>
+
+    <!-- View Post Modal -->
+    <div id="viewPostModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="viewPostTitle"></h3>
+                <span class="close" onclick="closeModal('viewPostModal')">&times;</span>
+            </div>
+            
+            <div id="viewPostContent"></div>
+            
+            <div style="margin-top: 20px;">
+                <h4>Kommentare</h4>
+                <div id="commentsList" style="margin: 20px 0;"></div>
+                
+                <div class="form-group">
+                    <label>Neuer Kommentar</label>
+                    <textarea id="newComment" placeholder="Schreibe einen Kommentar..." rows="3"></textarea>
                 </div>
+                
+                <button class="btn btn-primary" onclick="addComment()">Kommentar hinzufügen</button>
             </div>
         </div>
     </div>
@@ -603,8 +746,8 @@
     <div id="updateModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Neues Update erstellen</h3>
-                <span class="close" onclick="closeModal()">&times;</span>
+                <h3>Neues Update</h3>
+                <span class="close" onclick="closeModal('updateModal')">&times;</span>
             </div>
             
             <div class="form-group">
@@ -614,7 +757,7 @@
             
             <div class="form-group">
                 <label>Inhalt</label>
-                <textarea id="updateContent" placeholder="Schreibe hier den Update-Text..."></textarea>
+                <textarea id="updateContent" placeholder="Update-Text..."></textarea>
             </div>
             
             <button class="btn btn-success" onclick="createUpdate()">Update veröffentlichen</button>
@@ -641,20 +784,22 @@
                 }
             ];
             localStorage.setItem('users', JSON.stringify(users));
-        } else {
-            users = JSON.parse(localStorage.getItem('users'));
-            // Admin sicherstellen
-            if (!users.find(u => u.username === 'ImBurni')) {
-                users.push({
+        }
+
+        // Forum Posts initialisieren
+        if (!localStorage.getItem('forumPosts')) {
+            const forumPosts = [
+                {
                     id: '1',
-                    username: 'ImBurni',
-                    passwordHash: adminHash,
-                    role: 'Admin',
-                    status: 'aktiv',
-                    registeredAt: new Date().toLocaleDateString('de-DE')
-                });
-                localStorage.setItem('users', JSON.stringify(users));
-            }
+                    title: 'Willkommen im Team Forum',
+                    content: 'Hier können Teammitglieder diskutieren und Aufgaben verwalten.',
+                    status: 'Abgeschlossen',
+                    author: 'ImBurni',
+                    date: new Date().toLocaleDateString('de-DE'),
+                    comments: []
+                }
+            ];
+            localStorage.setItem('forumPosts', JSON.stringify(forumPosts));
         }
 
         // Updates initialisieren
@@ -675,9 +820,8 @@
         if (!localStorage.getItem('teamInfo')) {
             const teamInfo = {
                 name: 'Moderations-Team',
-                description: 'Wir sind das offizielle Moderations-Team und kümmern uns um die Sicherheit und Ordnung.',
-                email: 'team@example.com',
-                extra: 'Bei Fragen einfach melden!'
+                description: 'Wir sind das offizielle Moderations-Team.',
+                email: 'team@example.com'
             };
             localStorage.setItem('teamInfo', JSON.stringify(teamInfo));
         }
@@ -783,18 +927,208 @@
             
             const titles = {
                 overview: 'Übersicht',
+                forum: 'Forum',
                 users: 'Nutzerverwaltung',
-                updates: 'Updates verwalten',
-                teaminfo: 'Team-Info verwalten',
-                settings: 'Einstellungen'
+                updates: 'Updates',
+                teaminfo: 'Team-Info'
             };
             document.getElementById('currentPageTitle').innerHTML = titles[tab];
             
-            // Daten neu laden
+            if (tab === 'forum') loadForumPosts();
             if (tab === 'users') loadUsers();
             if (tab === 'updates') loadUpdates();
             if (tab === 'teaminfo') loadTeamInfoForEdit();
         };
+
+        // ========== FORUM FUNKTIONEN ==========
+        window.showNewPostModal = function() {
+            document.getElementById('newPostModal').classList.add('active');
+        };
+
+        window.createPost = function() {
+            const title = document.getElementById('postTitle').value;
+            const status = document.getElementById('postStatus').value;
+            const content = document.getElementById('postContent').value;
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            
+            if (!title || !content) {
+                alert('❌ Bitte Titel und Inhalt ausfüllen');
+                return;
+            }
+            
+            const posts = JSON.parse(localStorage.getItem('forumPosts'));
+            const newPost = {
+                id: Date.now().toString(),
+                title: title,
+                content: content,
+                status: status,
+                author: currentUser.username,
+                date: new Date().toLocaleDateString('de-DE'),
+                comments: []
+            };
+            
+            posts.unshift(newPost);
+            localStorage.setItem('forumPosts', JSON.stringify(posts));
+            
+            closeModal('newPostModal');
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postContent').value = '';
+            
+            loadForumPosts();
+            loadOverview();
+        };
+
+        window.viewPost = function(postId) {
+            const posts = JSON.parse(localStorage.getItem('forumPosts'));
+            const post = posts.find(p => p.id === postId);
+            
+            if (post) {
+                document.getElementById('viewPostTitle').innerHTML = post.title;
+                
+                let statusClass = 'label-default';
+                if (post.status === 'In Arbeit') statusClass = 'label-inarbeit';
+                if (post.status === 'Abgelehnt') statusClass = 'label-abgelehnt';
+                if (post.status === 'Abgeschlossen') statusClass = 'label-abgeschlossen';
+                
+                let commentsHtml = '';
+                post.comments.forEach(comment => {
+                    commentsHtml += `
+                        <div class="comment">
+                            <div class="comment-header">
+                                <span class="comment-author">${comment.author}</span>
+                                <span class="comment-date">${comment.date}</span>
+                            </div>
+                            <div class="comment-text">${comment.text}</div>
+                        </div>
+                    `;
+                });
+                
+                document.getElementById('commentsList').innerHTML = commentsHtml || '<p style="color: #718096;">Keine Kommentare</p>';
+                
+                document.getElementById('viewPostContent').innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="${statusClass}">${post.status}</span>
+                        <span style="margin-left: 15px; color: #718096;">von ${post.author} · ${post.date}</span>
+                    </div>
+                    <p style="color: #4a5568; line-height: 1.6;">${post.content}</p>
+                `;
+                
+                // Post ID für Kommentare speichern
+                document.getElementById('viewPostModal').setAttribute('data-post-id', postId);
+                document.getElementById('viewPostModal').classList.add('active');
+            }
+        };
+
+        window.addComment = function() {
+            const comment = document.getElementById('newComment').value;
+            const postId = document.getElementById('viewPostModal').getAttribute('data-post-id');
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            
+            if (!comment) {
+                alert('❌ Bitte Kommentar eingeben');
+                return;
+            }
+            
+            const posts = JSON.parse(localStorage.getItem('forumPosts'));
+            const post = posts.find(p => p.id === postId);
+            
+            if (post) {
+                post.comments.push({
+                    author: currentUser.username,
+                    text: comment,
+                    date: new Date().toLocaleDateString('de-DE')
+                });
+                
+                localStorage.setItem('forumPosts', JSON.stringify(posts));
+                
+                document.getElementById('newComment').value = '';
+                viewPost(postId); // Reload comments
+            }
+        };
+
+        window.changePostStatus = function(postId, newStatus) {
+            const posts = JSON.parse(localStorage.getItem('forumPosts'));
+            const post = posts.find(p => p.id === postId);
+            
+            if (post) {
+                post.status = newStatus;
+                localStorage.setItem('forumPosts', JSON.stringify(posts));
+                loadForumPosts();
+            }
+        };
+
+        window.deletePost = function(postId) {
+            if (confirm('Beitrag wirklich löschen?')) {
+                let posts = JSON.parse(localStorage.getItem('forumPosts'));
+                posts = posts.filter(p => p.id !== postId);
+                localStorage.setItem('forumPosts', JSON.stringify(posts));
+                loadForumPosts();
+                loadOverview();
+            }
+        };
+
+        let currentFilter = 'all';
+        
+        window.filterForum = function(filter, element) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            element.classList.add('active');
+            currentFilter = filter;
+            loadForumPosts();
+        };
+
+        function loadForumPosts() {
+            const posts = JSON.parse(localStorage.getItem('forumPosts'));
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            const isAdmin = currentUser && currentUser.username === 'ImBurni';
+            
+            // Filtern
+            let filteredPosts = posts;
+            if (currentFilter !== 'all') {
+                filteredPosts = posts.filter(p => p.status === currentFilter);
+            }
+            
+            let html = '';
+            filteredPosts.forEach(post => {
+                let statusClass = 'label-default';
+                if (post.status === 'In Arbeit') statusClass = 'label-inarbeit';
+                if (post.status === 'Abgelehnt') statusClass = 'label-abgelehnt';
+                if (post.status === 'Abgeschlossen') statusClass = 'label-abgeschlossen';
+                
+                html += `
+                    <div class="forum-card">
+                        <div class="forum-header">
+                            <span class="forum-title">${post.title}</span>
+                            <span class="${statusClass}">${post.status}</span>
+                        </div>
+                        <div class="forum-meta">
+                            <span>👤 ${post.author}</span>
+                            <span>📅 ${post.date}</span>
+                            <span>💬 ${post.comments.length} Kommentare</span>
+                        </div>
+                        <div class="forum-content">
+                            ${post.content.substring(0, 150)}${post.content.length > 150 ? '...' : ''}
+                        </div>
+                        <div class="forum-footer">
+                            <button class="btn btn-primary" style="padding: 5px 15px;" onclick="viewPost('${post.id}')">Ansehen</button>
+                            <div class="forum-actions">
+                                ${isAdmin ? `
+                                    <select onchange="changePostStatus('${post.id}', this.value)" style="padding: 5px; border-radius: 5px;">
+                                        <option value="In Arbeit" ${post.status === 'In Arbeit' ? 'selected' : ''}>In Arbeit</option>
+                                        <option value="Abgelehnt" ${post.status === 'Abgelehnt' ? 'selected' : ''}>Abgelehnt</option>
+                                        <option value="Abgeschlossen" ${post.status === 'Abgeschlossen' ? 'selected' : ''}>Abgeschlossen</option>
+                                    </select>
+                                    <button class="btn btn-danger" style="padding: 5px 10px;" onclick="deletePost('${post.id}')">🗑</button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('forumPosts').innerHTML = html || '<p style="text-align: center; color: #718096;">Keine Beiträge vorhanden</p>';
+        }
 
         // ========== DATEN LADEN ==========
         function loadAllData() {
@@ -802,40 +1136,35 @@
             loadUsers();
             loadUpdates();
             loadTeamInfoForEdit();
+            loadForumPosts();
         }
 
         function loadOverview() {
             const users = JSON.parse(localStorage.getItem('users'));
-            const updates = JSON.parse(localStorage.getItem('updates'));
-            const teamInfo = JSON.parse(localStorage.getItem('teamInfo'));
+            const posts = JSON.parse(localStorage.getItem('forumPosts'));
             
+            document.getElementById('totalPosts').innerHTML = posts.length;
+            document.getElementById('inProgressCount').innerHTML = posts.filter(p => p.status === 'In Arbeit').length;
+            document.getElementById('completedCount').innerHTML = posts.filter(p => p.status === 'Abgeschlossen').length;
             document.getElementById('totalMembers').innerHTML = users.length;
-            document.getElementById('pendingMembers').innerHTML = users.filter(u => u.status === 'ausstehend').length;
-            document.getElementById('totalUpdates').innerHTML = updates.length;
-            document.getElementById('activeMods').innerHTML = users.filter(u => u.status === 'aktiv' && u.username !== 'ImBurni').length;
             
-            // Letzte 3 Updates anzeigen
-            const recentUpdates = updates.slice(0, 3);
-            let updatesHtml = '';
-            recentUpdates.forEach(update => {
-                updatesHtml += `
-                    <div class="update-card">
-                        <div class="update-header">
-                            <span class="update-title">${update.title}</span>
-                            <span class="update-date">${update.date}</span>
+            // Letzte 3 Beiträge
+            const recentPosts = posts.slice(0, 3);
+            let recentHtml = '';
+            recentPosts.forEach(post => {
+                recentHtml += `
+                    <div class="forum-card" style="margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="font-weight: 600;">${post.title}</span>
+                            <span class="${post.status === 'In Arbeit' ? 'label-inarbeit' : post.status === 'Abgelehnt' ? 'label-abgelehnt' : 'label-abgeschlossen'}">${post.status}</span>
                         </div>
-                        <div class="update-content">${update.content.substring(0, 100)}${update.content.length > 100 ? '...' : ''}</div>
+                        <div style="color: #718096; font-size: 13px; margin-top: 5px;">
+                            von ${post.author} · ${post.date}
+                        </div>
                     </div>
                 `;
             });
-            document.getElementById('recentUpdates').innerHTML = updatesHtml || '<p style="color: #718096;">Keine Updates vorhanden</p>';
-            
-            // Team Info Vorschau
-            document.getElementById('teamInfoPreview').innerHTML = `
-                <h4 style="margin-bottom: 10px;">${teamInfo.name}</h4>
-                <p>${teamInfo.description}</p>
-                <p><strong>Kontakt:</strong> ${teamInfo.email}</p>
-            `;
+            document.getElementById('recentPosts').innerHTML = recentHtml || '<p style="color: #718096;">Keine Beiträge</p>';
         }
 
         function loadUsers() {
@@ -868,7 +1197,7 @@
             });
             
             if (users.filter(u => u.username !== 'ImBurni').length === 0) {
-                html = '<tr><td colspan="5" style="text-align: center; padding: 30px;">📭 Noch keine registrierten Nutzer</td></tr>';
+                html = '<tr><td colspan="5" style="text-align: center; padding: 30px;">📭 Keine registrierten Nutzer</td></tr>';
             }
             
             document.getElementById('usersTableBody').innerHTML = html;
@@ -876,28 +1205,21 @@
 
         function loadUpdates() {
             const updates = JSON.parse(localStorage.getItem('updates'));
-            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-            const isAdmin = currentUser && currentUser.username === 'ImBurni';
             
             let html = '';
             updates.forEach(update => {
                 html += `
-                    <div class="update-card">
-                        <div class="update-header">
-                            <span class="update-title">${update.title}</span>
-                            <span class="update-date">${update.date} · von ${update.author}</span>
+                    <div class="forum-card">
+                        <div class="forum-header">
+                            <span class="forum-title">${update.title}</span>
+                            <span style="color: #718096;">${update.date} · von ${update.author}</span>
                         </div>
-                        <div class="update-content">${update.content}</div>
-                        ${isAdmin ? `
-                            <div class="update-actions">
-                                <button class="btn btn-danger" style="padding: 5px 15px;" onclick="deleteUpdate('${update.id}')">Löschen</button>
-                            </div>
-                        ` : ''}
+                        <div class="forum-content">${update.content}</div>
                     </div>
                 `;
             });
             
-            document.getElementById('updatesList').innerHTML = html || '<p style="color: #718096; text-align: center;">Keine Updates vorhanden</p>';
+            document.getElementById('updatesList').innerHTML = html || '<p style="color: #718096;">Keine Updates vorhanden</p>';
         }
 
         function loadTeamInfoForEdit() {
@@ -905,18 +1227,11 @@
             document.getElementById('teamName').value = teamInfo.name || '';
             document.getElementById('teamDescription').value = teamInfo.description || '';
             document.getElementById('teamEmail').value = teamInfo.email || '';
-            document.getElementById('teamExtra').value = teamInfo.extra || '';
         }
 
         // ========== UPDATE FUNKTIONEN ==========
         window.showUpdateModal = function() {
             document.getElementById('updateModal').classList.add('active');
-        };
-
-        window.closeModal = function() {
-            document.getElementById('updateModal').classList.remove('active');
-            document.getElementById('updateTitle').value = '';
-            document.getElementById('updateContent').value = '';
         };
 
         window.createUpdate = function() {
@@ -941,33 +1256,24 @@
             updates.unshift(newUpdate);
             localStorage.setItem('updates', JSON.stringify(updates));
             
-            closeModal();
+            closeModal('updateModal');
+            document.getElementById('updateTitle').value = '';
+            document.getElementById('updateContent').value = '';
+            
             loadUpdates();
             loadOverview();
         };
 
-        window.deleteUpdate = function(updateId) {
-            if (confirm('Update wirklich löschen?')) {
-                let updates = JSON.parse(localStorage.getItem('updates'));
-                updates = updates.filter(u => u.id !== updateId);
-                localStorage.setItem('updates', JSON.stringify(updates));
-                loadUpdates();
-                loadOverview();
-            }
-        };
-
-        // ========== TEAM INFO FUNKTIONEN ==========
+        // ========== TEAM INFO ==========
         window.saveTeamInfo = function() {
             const teamInfo = {
                 name: document.getElementById('teamName').value,
                 description: document.getElementById('teamDescription').value,
-                email: document.getElementById('teamEmail').value,
-                extra: document.getElementById('teamExtra').value
+                email: document.getElementById('teamEmail').value
             };
             
             localStorage.setItem('teamInfo', JSON.stringify(teamInfo));
             alert('✅ Team-Info gespeichert!');
-            loadOverview();
         };
 
         // ========== ADMIN FUNKTIONEN ==========
@@ -997,11 +1303,6 @@
             }
         };
 
-        // ========== SETTINGS ==========
-        window.saveSettings = function() {
-            alert('✅ Einstellungen gespeichert!');
-        };
-
         // ========== HELPER ==========
         function updateHeader() {
             const user = JSON.parse(sessionStorage.getItem('currentUser'));
@@ -1010,6 +1311,10 @@
                 document.getElementById('headerAvatar').innerHTML = user.username.charAt(0);
             }
         }
+
+        window.closeModal = function(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        };
 
         window.showRegister = function() {
             document.getElementById('loginPage').classList.add('hidden');
@@ -1044,7 +1349,7 @@
             if (e.key === 'Enter') handleLogin();
         });
 
-        console.log('✅ Team Portal geladen');
+        console.log('✅ Team Portal mit Forum geladen');
         console.log('Admin: ImBurni / Passwort: admin123');
     </script>
 </body>
