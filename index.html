@@ -3,40 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mod-Team Portal</title>
+    <title>Moderations-Team · Admin Panel</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
+
         body {
-            background: #0e0e10;
+            background: #0c0c0f;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 1.5rem;
         }
-        .container {
-            background: #18181b;
+
+        /* Hauptcontainer */
+        .app {
+            width: 100%;
+            max-width: 1200px;
+            background: #0f0f12;
+            border-radius: 40px;
+            border: 1px solid #22222a;
+            overflow: hidden;
+            box-shadow: 0 30px 60px -20px #00000080;
+        }
+
+        /* Header für alle Ansichten */
+        .header {
+            background: #0a0a0c;
+            padding: 1.5rem 2.5rem;
+            border-bottom: 1px solid #22222a;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-badge {
+            background: #ff4d4d;
+            color: white;
+            font-weight: 700;
+            font-size: 0.8rem;
+            padding: 0.3rem 1rem;
+            border-radius: 100px;
+            letter-spacing: 0.3px;
+        }
+
+        .logo h1 {
+            color: white;
+            font-weight: 500;
+            font-size: 1.5rem;
+        }
+
+        .admin-tag {
+            background: #9147ff20;
+            color: #9147ff;
+            padding: 0.3rem 1.2rem;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid #9147ff40;
+        }
+
+        /* Login / Register Container */
+        .auth-container {
+            max-width: 440px;
+            margin: 3rem auto;
+            background: #151518;
             border-radius: 32px;
             padding: 2.5rem;
-            width: 90%;
-            max-width: 400px;
-            border: 1px solid #2f2f35;
+            border: 1px solid #25252d;
         }
-        h2 { color: white; margin-bottom: 2rem; }
-        input {
-            width: 100%;
-            padding: 1rem;
-            background: #0f0f11;
-            border: 1px solid #2f2f37;
-            border-radius: 16px;
+
+        .auth-title {
             color: white;
-            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
         }
-        button {
+
+        .input-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .input-group label {
+            display: block;
+            color: #9f9fa8;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: #0c0c10;
+            border: 1px solid #2a2a33;
+            border-radius: 20px;
+            padding: 1rem 1.5rem;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #9147ff;
+            box-shadow: 0 0 0 4px #9147ff20;
+        }
+
+        .btn {
             background: #9147ff;
             color: white;
             border: none;
@@ -44,186 +128,488 @@
             width: 100%;
             border-radius: 40px;
             font-weight: 600;
+            font-size: 1.1rem;
             cursor: pointer;
-            margin-bottom: 0.5rem;
+            transition: all 0.2s;
+            margin-top: 1rem;
         }
-        .hidden { display: none !important; }
-        .admin-panel {
-            max-width: 800px;
-            width: 100%;
+
+        .btn:hover {
+            background: #772ce8;
+            transform: scale(1.01);
         }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid #2a2a33;
+            color: #cfcfda;
+            margin-top: 0.8rem;
+        }
+
+        .btn-secondary:hover {
+            background: #1f1f27;
+            border-color: #9147ff;
+            color: white;
+            transform: none;
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding: 0.8rem;
+            border-radius: 16px;
+            font-weight: 500;
+        }
+
+        .message-error {
+            background: #ff4d4d15;
+            color: #ff6b6b;
+            border: 1px solid #ff4d4d30;
+        }
+
+        .message-success {
+            background: #4dff4d10;
+            color: #6bff6b;
+            border: 1px solid #4dff4d30;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Admin Dashboard */
+        .dashboard {
+            padding: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #151518;
+            border-radius: 24px;
+            padding: 1.5rem;
+            border: 1px solid #25252d;
+        }
+
+        .stat-label {
+            color: #8f8f9a;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-number {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-top: 0.3rem;
+        }
+
+        .users-table {
+            background: #151518;
+            border-radius: 28px;
+            border: 1px solid #25252d;
+            overflow: hidden;
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: 2fr 1.2fr 1.5fr 1.5fr;
+            padding: 1.2rem 1.8rem;
+            background: #0c0c10;
+            color: #a0a0ab;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #25252d;
+        }
+
         .user-row {
             display: grid;
-            grid-template-columns: 2fr 2fr 1fr 1fr;
-            padding: 1rem;
-            border-bottom: 1px solid #2f2f35;
+            grid-template-columns: 2fr 1.2fr 1.5fr 1.5fr;
+            padding: 1.2rem 1.8rem;
+            align-items: center;
+            border-bottom: 1px solid #25252d;
+            transition: background 0.2s;
+        }
+
+        .user-row:hover {
+            background: #1a1a20;
+        }
+
+        .user-row:last-child {
+            border-bottom: none;
+        }
+
+        .user-name {
             color: white;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .user-email {
+            color: #7a7a85;
+            font-size: 0.85rem;
+            margin-top: 0.2rem;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            width: fit-content;
+        }
+
+        .role-admin {
+            background: #ff4d4d20;
+            color: #ff6b6b;
+            border: 1px solid #ff4d4d40;
+        }
+
+        .role-mod {
+            background: #4d7fff20;
+            color: #6b9bff;
+            border: 1px solid #4d7fff40;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            width: fit-content;
+        }
+
+        .status-active {
+            background: #4dff4d20;
+            color: #6bff6b;
+            border: 1px solid #4dff4d40;
+        }
+
+        .status-pending {
+            background: #ffaa4d20;
+            color: #ffb86b;
+            border: 1px solid #ffaa4d40;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-approve {
+            background: #4dff4d20;
+            color: #4dff4d;
+            border: 1px solid #4dff4d40;
+        }
+
+        .btn-approve:hover {
+            background: #4dff4d30;
+            transform: scale(1.02);
+        }
+
+        .btn-reject {
+            background: #ff4d4d20;
+            color: #ff4d4d;
+            border: 1px solid #ff4d4d40;
+        }
+
+        .btn-reject:hover {
+            background: #ff4d4d30;
+        }
+
+        .btn-delete {
+            background: #ffaa4d20;
+            color: #ffaa4d;
+            border: 1px solid #ffaa4d40;
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .admin-info span {
+            color: white;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background: #25252d;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.8rem;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: #35353f;
+        }
+
+        .empty-state {
+            padding: 3rem;
+            text-align: center;
+            color: #7a7a85;
+            font-size: 1.1rem;
+        }
+
+        /* Crypto.js für Hashing */
+        .crypto-note {
+            color: #5a5a65;
+            font-size: 0.8rem;
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #25252d;
         }
     </style>
-    <!-- crypto-js für Hashing (von offiziellem CDN) -->
+    <!-- SHA256 Hashing Bibliothek -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </head>
 <body>
-    <!-- LOGIN -->
-    <div id="loginContainer" class="container">
-        <h2>🔐 Mod-Team Login</h2>
-        <input type="text" id="username" placeholder="Benutzername">
-        <input type="password" id="password" placeholder="Passwort">
-        <button onclick="login()">Einloggen</button>
-        <button onclick="showRegister()" style="background: #2f2f35;">Registrieren</button>
-        <div id="message" style="color: #ff4d4d; margin-top: 1rem;"></div>
-    </div>
-
-    <!-- REGISTRIERUNG -->
-    <div id="registerContainer" class="container hidden">
-        <h2>📝 Registrieren</h2>
-        <input type="text" id="regUsername" placeholder="Benutzername">
-        <input type="email" id="regEmail" placeholder="Email">
-        <input type="password" id="regPassword" placeholder="Passwort">
-        <button onclick="register()">Registrieren</button>
-        <button onclick="backToLogin()" style="background: #2f2f35;">Zurück</button>
-    </div>
-
-    <!-- ADMIN PANEL -->
-    <div id="adminContainer" class="admin-panel hidden">
-        <div style="background: #18181b; border-radius: 32px; padding: 2rem;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 2rem;">
-                <h2 style="color: white;">👥 Nutzerverwaltung</h2>
-                <button onclick="logout()" style="width: auto; padding: 0.5rem 2rem;">Logout</button>
+    <div class="app">
+        <!-- HEADER (immer sichtbar) -->
+        <div class="header">
+            <div class="logo">
+                <span class="logo-badge">MOD TEAM</span>
+                <h1>Admin Portal</h1>
             </div>
-            
-            <div id="userList" style="background: #0f0f11; border-radius: 24px; padding: 1rem;">
-                <div class="user-row" style="color: #9a9aa3; font-weight: bold;">
-                    <div>Benutzername</div>
-                    <div>Email</div>
-                    <div>Status</div>
-                    <div>Aktion</div>
+            <div id="headerAdminInfo" class="admin-info hidden">
+                <span id="headerUserName"></span>
+                <button class="logout-btn" id="logoutBtn">Abmelden</button>
+            </div>
+        </div>
+
+        <!-- LOGIN VIEW -->
+        <div id="loginView">
+            <div class="auth-container">
+                <h2 class="auth-title">🔐 Willkommen zurück</h2>
+                
+                <div class="input-group">
+                    <label>Benutzername</label>
+                    <input type="text" id="loginUsername" placeholder="z.B. ImBurni" autocomplete="off">
                 </div>
-                <div id="users"></div>
+                
+                <div class="input-group">
+                    <label>Passwort</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••">
+                </div>
+
+                <button class="btn" id="loginBtn">Einloggen</button>
+                <button class="btn btn-secondary" id="showRegisterBtn">Neu hier? Registrieren</button>
+
+                <div id="loginMessage" class="message hidden"></div>
+            </div>
+        </div>
+
+        <!-- REGISTER VIEW -->
+        <div id="registerView" class="hidden">
+            <div class="auth-container">
+                <h2 class="auth-title">📝 Registrieren</h2>
+                
+                <div class="input-group">
+                    <label>Benutzername</label>
+                    <input type="text" id="registerUsername" placeholder="Dein Name">
+                </div>
+                
+                <div class="input-group">
+                    <label>Passwort</label>
+                    <input type="password" id="registerPassword" placeholder="Mind. 4 Zeichen">
+                </div>
+
+                <button class="btn" id="registerBtn">Registrieren</button>
+                <button class="btn btn-secondary" id="backToLoginBtn">Zurück zum Login</button>
+
+                <div id="registerMessage" class="message hidden"></div>
+            </div>
+        </div>
+
+        <!-- ADMIN DASHBOARD -->
+        <div id="adminView" class="dashboard hidden">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Gesamt Nutzer</div>
+                    <div class="stat-number" id="totalUsers">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Ausstehend</div>
+                    <div class="stat-number" id="pendingUsers">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Aktiv</div>
+                    <div class="stat-number" id="activeUsers">0</div>
+                </div>
+            </div>
+
+            <!-- User Tabelle -->
+            <div class="users-table">
+                <div class="table-header">
+                    <div>Benutzer</div>
+                    <div>Rolle</div>
+                    <div>Status</div>
+                    <div>Aktionen</div>
+                </div>
+                <div id="usersList"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // ========== SICHERE VERSION - KEINE KLARTEXT-PASSWÖRTER ==========
-        
-        // Admin ist fest verdrahtet (nur einer - sicher!)
+        // ==================== SICHERE DATENBANK ====================
         const ADMIN_USERNAME = 'ImBurni';
-        const ADMIN_PASSWORD_HASH = CryptoJS.SHA256('Admin123!').toString(); // Gehasht!
-        
-        // Datenbank initialisieren
-        let users = JSON.parse(localStorage.getItem('secure_users')) || [
+        const ADMIN_PASSWORD_HASH = CryptoJS.SHA256('admin123').toString();
+
+        // Users initialisieren
+        let users = JSON.parse(localStorage.getItem('mod_users')) || [
             {
                 id: 1,
                 username: 'ImBurni',
-                email: 'imburni@admin.de',
-                passwordHash: ADMIN_PASSWORD_HASH, // Nur Hash gespeichert!
+                passwordHash: ADMIN_PASSWORD_HASH,
                 role: 'Admin',
                 status: 'aktiv'
             }
         ];
 
-        // Eingeloggter User
-        let currentUser = null;
+        let currentUser = JSON.parse(sessionStorage.getItem('currentUser')) || null;
 
-        // ========== HELPER ==========
+        // ==================== HELPER ====================
         function hashPassword(password) {
-            return CryptoJS.SHA256(password).toString(); // Einweg-Hash
+            return CryptoJS.SHA256(password).toString();
         }
 
         function saveUsers() {
-            // Beim Speichern: Passwörter sind bereits gehasht
-            localStorage.setItem('secure_users', JSON.stringify(users));
+            localStorage.setItem('mod_users', JSON.stringify(users));
         }
 
-        // ========== LOGIN ==========
-        window.login = function() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+        function showMessage(element, text, isSuccess = false) {
+            element.textContent = text;
+            element.className = 'message ' + (isSuccess ? 'message-success' : 'message-error');
+            element.classList.remove('hidden');
             
-            if (!username || !password) {
-                showMessage('Bitte alles ausfüllen');
-                return;
-            }
-            
-            // Passwort hashen für Vergleich
-            const passwordHash = hashPassword(password);
-            
-            // User suchen
-            const user = users.find(u => u.username === username && u.passwordHash === passwordHash);
-            
-            if (!user) {
-                showMessage('❌ Falsche Anmeldedaten');
-                return;
-            }
-            
-            if (user.status !== 'aktiv') {
-                showMessage('⏳ Account noch nicht freigeschaltet');
-                return;
-            }
-            
-            // Erfolgreich eingeloggt
-            currentUser = user;
-            sessionStorage.setItem('secure_session', JSON.stringify({
-                id: user.id,
-                username: user.username,
-                role: user.role
-            }));
-            
-            showAdminPanel();
-        };
+            setTimeout(() => {
+                element.classList.add('hidden');
+            }, 3000);
+        }
 
-        // ========== REGISTRIERUNG ==========
-        window.register = function() {
-            const username = document.getElementById('regUsername').value;
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
-            
-            if (!username || !email || !password) {
-                alert('Bitte alles ausfüllen');
-                return;
+        // ==================== UI FUNKTIONEN ====================
+        function updateHeader() {
+            if (currentUser) {
+                document.getElementById('headerAdminInfo').classList.remove('hidden');
+                document.getElementById('headerUserName').innerHTML = `👤 ${currentUser.username} · ${currentUser.role}`;
+            } else {
+                document.getElementById('headerAdminInfo').classList.add('hidden');
             }
-            
-            if (password.length < 4) {
-                alert('Passwort zu kurz');
-                return;
-            }
-            
-            // Prüfen ob Username existiert
-            if (users.find(u => u.username === username)) {
-                alert('Username bereits vergeben');
-                return;
-            }
-            
-            // Neuen User mit GEHASHTEM Passwort anlegen
-            const newUser = {
-                id: Date.now(),
-                username: username,
-                email: email,
-                passwordHash: hashPassword(password), // NUR der Hash wird gespeichert!
-                role: 'Moderator',
-                status: 'ausstehend'
-            };
-            
-            users.push(newUser);
-            saveUsers();
-            
-            alert('✅ Registriert! Admin muss freischalten.');
-            backToLogin();
-        };
+        }
 
-        // ========== ADMIN FUNKTIONEN ==========
+        function showAdminDashboard() {
+            document.getElementById('loginView').classList.add('hidden');
+            document.getElementById('registerView').classList.add('hidden');
+            document.getElementById('adminView').classList.remove('hidden');
+            updateHeader();
+            renderUserTable();
+        }
+
+        function showLogin() {
+            document.getElementById('loginView').classList.remove('hidden');
+            document.getElementById('registerView').classList.add('hidden');
+            document.getElementById('adminView').classList.add('hidden');
+            document.getElementById('headerAdminInfo').classList.add('hidden');
+            currentUser = null;
+            sessionStorage.removeItem('currentUser');
+            
+            // Inputs leeren
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+        }
+
+        // ==================== USER TABELLE RENDERN ====================
+        function renderUserTable() {
+            const isAdmin = currentUser?.username === 'ImBurni';
+            
+            // Stats berechnen
+            const total = users.length;
+            const pending = users.filter(u => u.status === 'ausstehend').length;
+            const active = users.filter(u => u.status === 'aktiv').length;
+            
+            document.getElementById('totalUsers').textContent = total;
+            document.getElementById('pendingUsers').textContent = pending;
+            document.getElementById('activeUsers').textContent = active;
+
+            // Tabelle bauen
+            let html = '';
+            users.forEach(user => {
+                // Admin nicht in der Liste anzeigen (aber für Stats zählen)
+                if (user.username === 'ImBurni') return;
+                
+                const roleClass = user.role === 'Admin' ? 'role-admin' : 'role-mod';
+                const statusClass = user.status === 'aktiv' ? 'status-active' : 'status-pending';
+                
+                html += `
+                    <div class="user-row">
+                        <div>
+                            <div class="user-name">${user.username}</div>
+                        </div>
+                        <div>
+                            <span class="role-badge ${roleClass}">${user.role || 'Moderator'}</span>
+                        </div>
+                        <div>
+                            <span class="status-badge ${statusClass}">${user.status === 'aktiv' ? 'Aktiv' : 'Ausstehend'}</span>
+                        </div>
+                        <div class="action-buttons">
+                            ${isAdmin ? `
+                                ${user.status === 'ausstehend' ? `
+                                    <button class="action-btn btn-approve" onclick="approveUser('${user.id}')">✔ Freischalten</button>
+                                    <button class="action-btn btn-reject" onclick="rejectUser('${user.id}')">✖ Ablehnen</button>
+                                ` : `
+                                    <button class="action-btn btn-delete" onclick="deleteUser('${user.id}')">🗑 Entfernen</button>
+                                `}
+                            ` : user.id === currentUser?.id ? '<span style="color: #7a7a85;">👤 Das bist du</span>' : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            if (!html) {
+                html = '<div class="empty-state">✨ Noch keine registrierten Nutzer</div>';
+            }
+            
+            document.getElementById('usersList').innerHTML = html;
+        }
+
+        // ==================== ADMIN FUNKTIONEN ====================
         window.approveUser = function(userId) {
             if (currentUser?.username !== 'ImBurni') return;
             
             users = users.map(u => {
                 if (u.id == userId) {
-                    return {...u, status: 'aktiv'};
+                    return {...u, status: 'aktiv', role: 'Moderator'};
                 }
                 return u;
             });
             saveUsers();
-            renderUserList();
+            renderUserTable();
         };
 
         window.rejectUser = function(userId) {
@@ -231,76 +617,132 @@
             
             users = users.filter(u => u.id != userId);
             saveUsers();
-            renderUserList();
+            renderUserTable();
         };
 
-        function renderUserList() {
-            let html = '';
-            users.forEach(user => {
-                if (user.username === 'ImBurni') return; // Admin nicht anzeigen
+        window.deleteUser = function(userId) {
+            if (currentUser?.username !== 'ImBurni') return;
             
-                html += `
-                    <div class="user-row">
-                        <div>${user.username}</div>
-                        <div style="color: #7f7f8b;">${user.email}</div>
-                        <div>
-                            <span style="background: ${user.status === 'aktiv' ? '#4dff4d20' : '#ffaa4d20'}; color: ${user.status === 'aktiv' ? '#4dff4d' : '#ffaa4d'}; padding: 0.2rem 1rem; border-radius: 20px;">
-                                ${user.status}
-                            </span>
-                        </div>
-                        <div>
-                            ${user.status === 'ausstehend' ? `
-                                <button onclick="approveUser(${user.id})" style="background: #4dff4d; color: black; border: none; padding: 0.3rem 1rem; border-radius: 20px; cursor: pointer;">✔ Freischalten</button>
-                                <button onclick="rejectUser(${user.id})" style="background: #ff4d4d; color: white; border: none; padding: 0.3rem 1rem; border-radius: 20px; cursor: pointer;">✖ Ablehnen</button>
-                            ` : ''}
-                        </div>
-                    </div>
-                `;
-            });
-            document.getElementById('users').innerHTML = html || '<div style="padding: 1rem; color: #7f7f8b;">Keine ausstehenden User</div>';
-        }
-
-        // ========== UI FUNKTIONEN ==========
-        function showMessage(text) {
-            document.getElementById('message').textContent = text;
-            setTimeout(() => document.getElementById('message').textContent = '', 3000);
-        }
-
-        window.showRegister = function() {
-            document.getElementById('loginContainer').classList.add('hidden');
-            document.getElementById('registerContainer').classList.remove('hidden');
+            users = users.filter(u => u.id != userId);
+            saveUsers();
+            renderUserTable();
         };
 
-        window.backToLogin = function() {
-            document.getElementById('registerContainer').classList.add('hidden');
-            document.getElementById('loginContainer').classList.remove('hidden');
-        };
+        // ==================== LOGIN ====================
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!username || !password) {
+                showMessage(document.getElementById('loginMessage'), '❌ Bitte alles ausfüllen');
+                return;
+            }
 
-        function showAdminPanel() {
-            document.getElementById('loginContainer').classList.add('hidden');
-            document.getElementById('registerContainer').classList.add('hidden');
-            document.getElementById('adminContainer').classList.remove('hidden');
-            renderUserList();
-        }
+            const passwordHash = hashPassword(password);
+            const user = users.find(u => u.username === username && u.passwordHash === passwordHash);
 
-        window.logout = function() {
-            currentUser = null;
-            sessionStorage.removeItem('secure_session');
-            document.getElementById('adminContainer').classList.add('hidden');
-            document.getElementById('loginContainer').classList.remove('hidden');
-        };
+            if (!user) {
+                showMessage(document.getElementById('loginMessage'), '❌ Falscher Benutzername oder Passwort');
+                return;
+            }
 
-        // Session wiederherstellen
-        const savedSession = sessionStorage.getItem('secure_session');
-        if (savedSession) {
-            const session = JSON.parse(savedSession);
-            currentUser = users.find(u => u.id === session.id);
-            if (currentUser) {
-                showAdminPanel();
+            if (user.status !== 'aktiv') {
+                showMessage(document.getElementById('loginMessage'), '⏳ Dein Account muss noch freigeschaltet werden');
+                return;
+            }
+
+            // Erfolgreich eingeloggt
+            currentUser = {
+                id: user.id,
+                username: user.username,
+                role: user.role
+            };
+            
+            sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+            showAdminDashboard();
+        });
+
+        // ==================== REGISTRIERUNG ====================
+        document.getElementById('showRegisterBtn').addEventListener('click', () => {
+            document.getElementById('loginView').classList.add('hidden');
+            document.getElementById('registerView').classList.remove('hidden');
+        });
+
+        document.getElementById('backToLoginBtn').addEventListener('click', () => {
+            document.getElementById('registerView').classList.add('hidden');
+            document.getElementById('loginView').classList.remove('hidden');
+        });
+
+        document.getElementById('registerBtn').addEventListener('click', () => {
+            const username = document.getElementById('registerUsername').value.trim();
+            const password = document.getElementById('registerPassword').value;
+
+            if (!username || !password) {
+                showMessage(document.getElementById('registerMessage'), '❌ Bitte alles ausfüllen');
+                return;
+            }
+
+            if (password.length < 4) {
+                showMessage(document.getElementById('registerMessage'), '❌ Passwort mind. 4 Zeichen');
+                return;
+            }
+
+            // Prüfen ob Username schon existiert
+            if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+                showMessage(document.getElementById('registerMessage'), '❌ Benutzername bereits vergeben');
+                return;
+            }
+
+            // Neuen User anlegen (automatisch ausstehend)
+            const newUser = {
+                id: Date.now().toString(),
+                username: username,
+                passwordHash: hashPassword(password),
+                role: 'Moderator',
+                status: 'ausstehend'
+            };
+
+            users.push(newUser);
+            saveUsers();
+
+            // Erfolgsmeldung
+            showMessage(document.getElementById('registerMessage'), '✅ Registrierung erfolgreich! Admin muss freischalten.', true);
+            
+            // Felder leeren
+            document.getElementById('registerUsername').value = '';
+            document.getElementById('registerPassword').value = '';
+
+            // Nach 2 Sekunden zurück zum Login
+            setTimeout(() => {
+                document.getElementById('registerView').classList.add('hidden');
+                document.getElementById('loginView').classList.remove('hidden');
+            }, 2000);
+        });
+
+        // ==================== LOGOUT ====================
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            showLogin();
+        });
+
+        // ==================== SESSION CHECK ====================
+        if (currentUser) {
+            // Prüfen ob User noch existiert
+            const userExists = users.find(u => u.id === currentUser.id && u.status === 'aktiv');
+            if (userExists) {
+                showAdminDashboard();
+            } else {
+                showLogin();
             }
         }
 
-        console.log('✅ Sichere Version - Passwörter sind gehasht!');
+        // Enter-Taste für Login
+        document.getElementById('loginPassword').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('loginBtn').click();
+            }
+        });
+
+        console.log('✅ Admin Panel geladen - Nur ImBurni kann freischalten');
     </script>
 </body>
 </html>
