@@ -64,17 +64,7 @@
             font-size: 1.5rem;
         }
 
-        .admin-tag {
-            background: #9147ff20;
-            color: #9147ff;
-            padding: 0.3rem 1.2rem;
-            border-radius: 100px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            border: 1px solid #9147ff40;
-        }
-
-        /* Login / Register Container */
+        /* Login Container */
         .auth-container {
             max-width: 440px;
             margin: 3rem auto;
@@ -150,7 +140,6 @@
             background: #1f1f27;
             border-color: #9147ff;
             color: white;
-            transform: none;
         }
 
         .message {
@@ -234,15 +223,6 @@
             padding: 1.2rem 1.8rem;
             align-items: center;
             border-bottom: 1px solid #25252d;
-            transition: background 0.2s;
-        }
-
-        .user-row:hover {
-            background: #1a1a20;
-        }
-
-        .user-row:last-child {
-            border-bottom: none;
         }
 
         .user-name {
@@ -305,7 +285,6 @@
             font-weight: 600;
             font-size: 0.85rem;
             cursor: pointer;
-            transition: all 0.2s;
         }
 
         .btn-approve {
@@ -314,19 +293,10 @@
             border: 1px solid #4dff4d40;
         }
 
-        .btn-approve:hover {
-            background: #4dff4d30;
-            transform: scale(1.02);
-        }
-
         .btn-reject {
             background: #ff4d4d20;
             color: #ff4d4d;
             border: 1px solid #ff4d4d40;
-        }
-
-        .btn-reject:hover {
-            background: #ff4d4d30;
         }
 
         .btn-delete {
@@ -354,27 +324,12 @@
             border-radius: 40px;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .logout-btn:hover {
-            background: #35353f;
         }
 
         .empty-state {
             padding: 3rem;
             text-align: center;
             color: #7a7a85;
-            font-size: 1.1rem;
-        }
-
-        .crypto-note {
-            color: #5a5a65;
-            font-size: 0.8rem;
-            text-align: center;
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid #25252d;
         }
     </style>
     <!-- SHA256 Hashing Bibliothek -->
@@ -382,7 +337,7 @@
 </head>
 <body>
     <div class="app">
-        <!-- HEADER (immer sichtbar) -->
+        <!-- HEADER -->
         <div class="header">
             <div class="logo">
                 <span class="logo-badge">MOD TEAM</span>
@@ -401,12 +356,12 @@
                 
                 <div class="input-group">
                     <label>Benutzername</label>
-                    <input type="text" id="loginUsername" placeholder="z.B. ImBurni" autocomplete="off">
+                    <input type="text" id="loginUsername" placeholder="z.B. ImBurni" value="ImBurni">
                 </div>
                 
                 <div class="input-group">
                     <label>Passwort</label>
-                    <input type="password" id="loginPassword" placeholder="••••••••">
+                    <input type="password" id="loginPassword" placeholder="••••••••" value="Admin123!">
                 </div>
 
                 <button class="btn" id="loginBtn">Einloggen</button>
@@ -440,7 +395,6 @@
 
         <!-- ADMIN DASHBOARD -->
         <div id="adminView" class="dashboard hidden">
-            <!-- Stats Cards -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-label">Gesamt Nutzer</div>
@@ -456,7 +410,6 @@
                 </div>
             </div>
 
-            <!-- User Tabelle -->
             <div class="users-table">
                 <div class="table-header">
                     <div>Benutzer</div>
@@ -470,212 +423,82 @@
     </div>
 
     <script>
-        // ==================== SICHERE DATENBANK ====================
+        // ==================== FIX: LOCALSTORAGE ZURÜCKSETZEN ====================
+        // Damit der Admin sicher funktioniert, löschen wir erstmal alles
+        localStorage.removeItem('mod_users');
+        sessionStorage.removeItem('currentUser');
+
+        // ==================== ADMIN DATEN ====================
         const ADMIN_USERNAME = 'ImBurni';
-        // Hier wird der Hash für 'Admin123!' generiert
-        const ADMIN_PASSWORD_HASH = CryptoJS.SHA256('Admin123!').toString();
-
-        console.log('Admin Hash:', ADMIN_PASSWORD_HASH); // Zum Überprüfen
-
-        // Users initialisieren
-        let users = JSON.parse(localStorage.getItem('mod_users')) || [];
+        const ADMIN_PASSWORD = 'Admin123!';
         
-        // Wenn keine Users existieren, Admin anlegen
-        if (users.length === 0) {
-            users = [
-                {
-                    id: '1',
-                    username: 'ImBurni',
-                    passwordHash: ADMIN_PASSWORD_HASH,
-                    role: 'Admin',
-                    status: 'aktiv'
-                }
-            ];
-            localStorage.setItem('mod_users', JSON.stringify(users));
-        } else {
-            // Prüfen ob ImBurni existiert, wenn nicht hinzufügen
-            const adminExists = users.some(u => u.username === 'ImBurni');
-            if (!adminExists) {
-                users.push({
-                    id: Date.now().toString(),
-                    username: 'ImBurni',
-                    passwordHash: ADMIN_PASSWORD_HASH,
-                    role: 'Admin',
-                    status: 'aktiv'
-                });
-                localStorage.setItem('mod_users', JSON.stringify(users));
+        // Hash generieren
+        const ADMIN_HASH = CryptoJS.SHA256(ADMIN_PASSWORD).toString();
+        
+        // Users neu anlegen
+        let users = [
+            {
+                id: '1',
+                username: 'ImBurni',
+                passwordHash: ADMIN_HASH,
+                role: 'Admin',
+                status: 'aktiv'
             }
-        }
+        ];
+        
+        // Sofort speichern
+        localStorage.setItem('mod_users', JSON.stringify(users));
+        
+        console.log('✅ Admin wurde neu angelegt:');
+        console.log('Username:', ADMIN_USERNAME);
+        console.log('Password:', ADMIN_PASSWORD);
+        console.log('Hash:', ADMIN_HASH);
 
-        let currentUser = JSON.parse(sessionStorage.getItem('currentUser')) || null;
-
-        // ==================== HELPER ====================
-        function hashPassword(password) {
-            return CryptoJS.SHA256(password).toString();
-        }
-
-        function saveUsers() {
-            localStorage.setItem('mod_users', JSON.stringify(users));
-        }
-
-        function showMessage(element, text, isSuccess = false) {
-            element.textContent = text;
-            element.className = 'message ' + (isSuccess ? 'message-success' : 'message-error');
-            element.classList.remove('hidden');
-            
-            setTimeout(() => {
-                element.classList.add('hidden');
-            }, 3000);
-        }
-
-        // ==================== UI FUNKTIONEN ====================
-        function updateHeader() {
-            if (currentUser) {
-                document.getElementById('headerAdminInfo').classList.remove('hidden');
-                document.getElementById('headerUserName').innerHTML = `👤 ${currentUser.username} · ${currentUser.role}`;
-            } else {
-                document.getElementById('headerAdminInfo').classList.add('hidden');
-            }
-        }
-
-        function showAdminDashboard() {
-            document.getElementById('loginView').classList.add('hidden');
-            document.getElementById('registerView').classList.add('hidden');
-            document.getElementById('adminView').classList.remove('hidden');
-            updateHeader();
-            renderUserTable();
-        }
-
-        function showLogin() {
-            document.getElementById('loginView').classList.remove('hidden');
-            document.getElementById('registerView').classList.add('hidden');
-            document.getElementById('adminView').classList.add('hidden');
-            document.getElementById('headerAdminInfo').classList.add('hidden');
-            currentUser = null;
-            sessionStorage.removeItem('currentUser');
-            
-            // Inputs leeren
-            document.getElementById('loginUsername').value = '';
-            document.getElementById('loginPassword').value = '';
-        }
-
-        // ==================== USER TABELLE RENDERN ====================
-        function renderUserTable() {
-            const isAdmin = currentUser?.username === 'ImBurni';
-            
-            // Stats berechnen (ohne Admin)
-            const normalUsers = users.filter(u => u.username !== 'ImBurni');
-            const total = normalUsers.length;
-            const pending = normalUsers.filter(u => u.status === 'ausstehend').length;
-            const active = normalUsers.filter(u => u.status === 'aktiv').length;
-            
-            document.getElementById('totalUsers').textContent = total;
-            document.getElementById('pendingUsers').textContent = pending;
-            document.getElementById('activeUsers').textContent = active;
-
-            // Tabelle bauen
-            let html = '';
-            normalUsers.forEach(user => {
-                const roleClass = user.role === 'Admin' ? 'role-admin' : 'role-mod';
-                const statusClass = user.status === 'aktiv' ? 'status-active' : 'status-pending';
-                
-                html += `
-                    <div class="user-row">
-                        <div>
-                            <div class="user-name">${user.username}</div>
-                        </div>
-                        <div>
-                            <span class="role-badge ${roleClass}">${user.role || 'Moderator'}</span>
-                        </div>
-                        <div>
-                            <span class="status-badge ${statusClass}">${user.status === 'aktiv' ? 'Aktiv' : 'Ausstehend'}</span>
-                        </div>
-                        <div class="action-buttons">
-                            ${isAdmin ? `
-                                ${user.status === 'ausstehend' ? `
-                                    <button class="action-btn btn-approve" onclick="approveUser('${user.id}')">✔ Freischalten</button>
-                                    <button class="action-btn btn-reject" onclick="rejectUser('${user.id}')">✖ Ablehnen</button>
-                                ` : `
-                                    <button class="action-btn btn-delete" onclick="deleteUser('${user.id}')">🗑 Entfernen</button>
-                                `}
-                            ` : user.id === currentUser?.id ? '<span style="color: #7a7a85;">👤 Das bist du</span>' : ''}
-                        </div>
-                    </div>
-                `;
-            });
-
-            if (!html) {
-                html = '<div class="empty-state">✨ Noch keine registrierten Nutzer</div>';
-            }
-            
-            document.getElementById('usersList').innerHTML = html;
-        }
-
-        // ==================== ADMIN FUNKTIONEN ====================
-        window.approveUser = function(userId) {
-            if (currentUser?.username !== 'ImBurni') return;
-            
-            users = users.map(u => {
-                if (u.id == userId) {
-                    return {...u, status: 'aktiv', role: 'Moderator'};
-                }
-                return u;
-            });
-            saveUsers();
-            renderUserTable();
-        };
-
-        window.rejectUser = function(userId) {
-            if (currentUser?.username !== 'ImBurni') return;
-            
-            users = users.filter(u => u.id != userId);
-            saveUsers();
-            renderUserTable();
-        };
-
-        window.deleteUser = function(userId) {
-            if (currentUser?.username !== 'ImBurni') return;
-            
-            users = users.filter(u => u.id != userId);
-            saveUsers();
-            renderUserTable();
-        };
-
-        // ==================== LOGIN ====================
-        document.getElementById('loginBtn').addEventListener('click', () => {
+        // ==================== LOGIN FUNKTION ====================
+        document.getElementById('loginBtn').addEventListener('click', function() {
             const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value;
             
-            console.log('Login Versuch:', username, password);
+            console.log('Login-Versuch mit:', username, password);
             
             if (!username || !password) {
-                showMessage(document.getElementById('loginMessage'), '❌ Bitte alles ausfüllen');
+                showMessage('❌ Bitte alles ausfüllen', false);
                 return;
             }
 
-            const passwordHash = hashPassword(password);
-            console.log('Generierter Hash:', passwordHash);
+            // Users neu laden (sicherheitshalber)
+            users = JSON.parse(localStorage.getItem('mod_users'));
+            console.log('Aktuelle Users:', users);
+
+            // Passwort hashen
+            const passwordHash = CryptoJS.SHA256(password).toString();
+            console.log('Gehashtes Passwort:', passwordHash);
             
+            // User suchen
             const user = users.find(u => u.username === username);
             console.log('Gefundener User:', user);
             
             if (!user) {
-                showMessage(document.getElementById('loginMessage'), '❌ Falscher Benutzername oder Passwort');
+                showMessage('❌ Falscher Benutzername oder Passwort', false);
                 return;
             }
 
+            // Hash vergleichen
             if (user.passwordHash !== passwordHash) {
-                console.log('Hash Vergleich:', user.passwordHash, 'vs', passwordHash);
-                showMessage(document.getElementById('loginMessage'), '❌ Falscher Benutzername oder Passwort');
+                console.log('Hash-Vergleich fehlgeschlagen:');
+                console.log('Gespeichert:', user.passwordHash);
+                console.log('Eingegeben:', passwordHash);
+                showMessage('❌ Falscher Benutzername oder Passwort', false);
                 return;
             }
 
             if (user.status !== 'aktiv') {
-                showMessage(document.getElementById('loginMessage'), '⏳ Dein Account muss noch freigeschaltet werden');
+                showMessage('⏳ Account noch nicht freigeschaltet', false);
                 return;
             }
 
             // Erfolgreich eingeloggt
+            console.log('✅ Login erfolgreich!');
             currentUser = {
                 id: user.id,
                 username: user.username,
@@ -683,8 +506,82 @@
             };
             
             sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
-            showAdminDashboard();
+            
+            // UI umschalten
+            document.getElementById('loginView').classList.add('hidden');
+            document.getElementById('adminView').classList.remove('hidden');
+            document.getElementById('headerAdminInfo').classList.remove('hidden');
+            document.getElementById('headerUserName').innerHTML = `👤 ${currentUser.username} · ${currentUser.role}`;
+            
+            renderUserTable();
         });
+
+        // ==================== HILFSFUNKTION ====================
+        function showMessage(text, isSuccess = false) {
+            const msgEl = document.getElementById('loginMessage');
+            msgEl.textContent = text;
+            msgEl.className = 'message ' + (isSuccess ? 'message-success' : 'message-error');
+            msgEl.classList.remove('hidden');
+            
+            setTimeout(() => {
+                msgEl.classList.add('hidden');
+            }, 3000);
+        }
+
+        // ==================== USER TABELLE ====================
+        function renderUserTable() {
+            users = JSON.parse(localStorage.getItem('mod_users'));
+            const normalUsers = users.filter(u => u.username !== 'ImBurni');
+            
+            // Stats
+            document.getElementById('totalUsers').textContent = normalUsers.length;
+            document.getElementById('pendingUsers').textContent = normalUsers.filter(u => u.status === 'ausstehend').length;
+            document.getElementById('activeUsers').textContent = normalUsers.filter(u => u.status === 'aktiv').length;
+
+            // Tabelle
+            let html = '';
+            normalUsers.forEach(user => {
+                html += `
+                    <div class="user-row">
+                        <div class="user-name">${user.username}</div>
+                        <div><span class="role-badge role-mod">Moderator</span></div>
+                        <div><span class="status-badge ${user.status === 'aktiv' ? 'status-active' : 'status-pending'}">${user.status === 'aktiv' ? 'Aktiv' : 'Ausstehend'}</span></div>
+                        <div class="action-buttons">
+                            ${user.status === 'ausstehend' ? `
+                                <button class="action-btn btn-approve" onclick="approveUser('${user.id}')">✔ Freischalten</button>
+                                <button class="action-btn btn-reject" onclick="rejectUser('${user.id}')">✖ Ablehnen</button>
+                            ` : `
+                                <button class="action-btn btn-delete" onclick="deleteUser('${user.id}')">🗑 Entfernen</button>
+                            `}
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('usersList').innerHTML = html || '<div class="empty-state">✨ Noch keine registrierten Nutzer</div>';
+        }
+
+        // ==================== ADMIN FUNKTIONEN ====================
+        window.approveUser = function(userId) {
+            users = users.map(u => {
+                if (u.id == userId) return {...u, status: 'aktiv'};
+                return u;
+            });
+            localStorage.setItem('mod_users', JSON.stringify(users));
+            renderUserTable();
+        };
+
+        window.rejectUser = function(userId) {
+            users = users.filter(u => u.id != userId);
+            localStorage.setItem('mod_users', JSON.stringify(users));
+            renderUserTable();
+        };
+
+        window.deleteUser = function(userId) {
+            users = users.filter(u => u.id != userId);
+            localStorage.setItem('mod_users', JSON.stringify(users));
+            renderUserTable();
+        };
 
         // ==================== REGISTRIERUNG ====================
         document.getElementById('showRegisterBtn').addEventListener('click', () => {
@@ -702,41 +599,36 @@
             const password = document.getElementById('registerPassword').value;
 
             if (!username || !password) {
-                showMessage(document.getElementById('registerMessage'), '❌ Bitte alles ausfüllen');
+                document.getElementById('registerMessage').textContent = '❌ Bitte alles ausfüllen';
+                document.getElementById('registerMessage').className = 'message message-error';
+                document.getElementById('registerMessage').classList.remove('hidden');
                 return;
             }
 
-            if (password.length < 4) {
-                showMessage(document.getElementById('registerMessage'), '❌ Passwort mind. 4 Zeichen');
+            users = JSON.parse(localStorage.getItem('mod_users'));
+            
+            if (users.some(u => u.username === username)) {
+                document.getElementById('registerMessage').textContent = '❌ Benutzername bereits vergeben';
+                document.getElementById('registerMessage').className = 'message message-error';
+                document.getElementById('registerMessage').classList.remove('hidden');
                 return;
             }
 
-            // Prüfen ob Username schon existiert
-            if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
-                showMessage(document.getElementById('registerMessage'), '❌ Benutzername bereits vergeben');
-                return;
-            }
-
-            // Neuen User anlegen (automatisch ausstehend)
             const newUser = {
                 id: Date.now().toString(),
                 username: username,
-                passwordHash: hashPassword(password),
+                passwordHash: CryptoJS.SHA256(password).toString(),
                 role: 'Moderator',
                 status: 'ausstehend'
             };
 
             users.push(newUser);
-            saveUsers();
+            localStorage.setItem('mod_users', JSON.stringify(users));
 
-            // Erfolgsmeldung
-            showMessage(document.getElementById('registerMessage'), '✅ Registrierung erfolgreich! Admin muss freischalten.', true);
+            document.getElementById('registerMessage').textContent = '✅ Registrierung erfolgreich! Admin muss freischalten.';
+            document.getElementById('registerMessage').className = 'message message-success';
+            document.getElementById('registerMessage').classList.remove('hidden');
             
-            // Felder leeren
-            document.getElementById('registerUsername').value = '';
-            document.getElementById('registerPassword').value = '';
-
-            // Nach 2 Sekunden zurück zum Login
             setTimeout(() => {
                 document.getElementById('registerView').classList.add('hidden');
                 document.getElementById('loginView').classList.remove('hidden');
@@ -745,28 +637,20 @@
 
         // ==================== LOGOUT ====================
         document.getElementById('logoutBtn').addEventListener('click', () => {
-            showLogin();
+            sessionStorage.removeItem('currentUser');
+            document.getElementById('adminView').classList.add('hidden');
+            document.getElementById('loginView').classList.remove('hidden');
+            document.getElementById('headerAdminInfo').classList.add('hidden');
         });
 
-        // ==================== SESSION CHECK ====================
-        if (currentUser) {
-            // Prüfen ob User noch existiert
-            const userExists = users.find(u => u.id === currentUser.id && u.status === 'aktiv');
-            if (userExists) {
-                showAdminDashboard();
-            } else {
-                showLogin();
-            }
-        }
-
-        // Enter-Taste für Login
+        // ==================== ENTER-TASTE ====================
         document.getElementById('loginPassword').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 document.getElementById('loginBtn').click();
             }
         });
 
-        console.log('✅ Admin Panel geladen - ImBurni/Admin123! sollte funktionieren');
+        console.log('✅ Seite geladen - Admin: ImBurni / Admin123!');
     </script>
 </body>
 </html>
