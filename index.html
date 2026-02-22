@@ -591,8 +591,8 @@
                         <div class="number" id="completedCount">0</div>
                     </div>
                     <div class="stat-card">
-                        <h4>Team Mitglieder</h4>
-                        <div class="number" id="totalMembers">0</div>
+                        <h4>Ausstehende Nutzer</h4>
+                        <div class="number" id="pendingUsers">0</div>
                     </div>
                 </div>
 
@@ -603,6 +603,15 @@
                         <button class="btn btn-primary" onclick="switchTab('forum', document.querySelectorAll('.menu-item')[1])">Zum Forum</button>
                     </div>
                     <div id="recentPosts"></div>
+                </div>
+
+                <!-- Ausstehende Nutzer -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>⏳ Ausstehende Registrierungen</h3>
+                        <button class="btn btn-primary" onclick="switchTab('users', document.querySelectorAll('.menu-item')[2])">Verwalten</button>
+                    </div>
+                    <div id="pendingUsersList"></div>
                 </div>
             </div>
 
@@ -770,9 +779,15 @@
         // Admin anlegen
         const adminHash = CryptoJS.SHA256('admin123').toString();
         
-        // Users initialisieren
+        // Users initialisieren - OHNE vorhandene Daten zu löschen!
         let users = [];
-        if (!localStorage.getItem('users')) {
+        
+        // Prüfen ob schon Users existieren
+        if (localStorage.getItem('users')) {
+            users = JSON.parse(localStorage.getItem('users'));
+            console.log('📊 Vorhandene Users geladen:', users);
+        } else {
+            // Erste Initialisierung
             users = [
                 {
                     id: '1',
@@ -780,10 +795,11 @@
                     passwordHash: adminHash,
                     role: 'Admin',
                     status: 'aktiv',
-                    registeredAt: new Date().toLocaleDateString('de-DE')
+                    registeredAt: new Date().toLocaleDateString('de-DE') + ' ' + new Date().toLocaleTimeString('de-DE')
                 }
             ];
             localStorage.setItem('users', JSON.stringify(users));
+            console.log('✅ Admin wurde angelegt');
         }
 
         // Forum Posts initialisieren
@@ -837,6 +853,8 @@
             }
 
             const users = JSON.parse(localStorage.getItem('users'));
+            console.log('📊 Login Versuch - Alle Users:', users);
+            
             const passwordHash = CryptoJS.SHA256(password).toString();
             const user = users.find(u => u.username === username && u.passwordHash === passwordHash);
 
@@ -871,6 +889,8 @@
             const password = document.getElementById('regPassword').value;
             const msgBox = document.getElementById('registerMessage');
             
+            console.log('📝 Registrierungsversuch:', username);
+            
             if (!username || !password) {
                 msgBox.innerHTML = '❌ Bitte alles ausfüllen';
                 msgBox.className = 'message error';
@@ -884,6 +904,7 @@
             }
 
             let users = JSON.parse(localStorage.getItem('users'));
+            console.log('📊 Vorhandene Users vor Registrierung:', users);
             
             if (users.find(u => u.username === username)) {
                 msgBox.innerHTML = '❌ Benutzername bereits vergeben';
@@ -897,17 +918,26 @@
                 passwordHash: CryptoJS.SHA256(password).toString(),
                 role: 'Moderator',
                 status: 'ausstehend',
-                registeredAt: new Date().toLocaleDateString('de-DE')
+                registeredAt: new Date().toLocaleDateString('de-DE') + ' ' + new Date().toLocaleTimeString('de-DE')
             };
 
             users.push(newUser);
             localStorage.setItem('users', JSON.stringify(users));
+            
+            console.log('✅ Neuer User registriert:', newUser);
+            console.log('📊 Alle Users nach Registrierung:', JSON.parse(localStorage.getItem('users')));
             
             msgBox.innerHTML = '✅ Registrierung erfolgreich! Admin muss freischalten.';
             msgBox.className = 'message success';
             
             document.getElementById('regUsername').value = '';
             document.getElementById('regPassword').value = '';
+            
+            // Wenn Admin eingeloggt ist, Tabelle aktualisieren
+            if (sessionStorage.getItem('currentUser')) {
+                loadUsers();
+                loadOverview();
+            }
             
             setTimeout(backToLogin, 2000);
         };
@@ -991,19 +1021,23 @@
                 if (post.status === 'Abgeschlossen') statusClass = 'label-abgeschlossen';
                 
                 let commentsHtml = '';
-                post.comments.forEach(comment => {
-                    commentsHtml += `
-                        <div class="comment">
-                            <div class="comment-header">
-                                <span class="comment-author">${comment.author}</span>
-                                <span class="comment-date">${comment.date}</span>
+                if (post.comments && post.comments.length > 0) {
+                    post.comments.forEach(comment => {
+                        commentsHtml += `
+                            <div class="comment">
+                                <div class="comment-header">
+                                    <span class="comment-author">${comment.author}</span>
+                                    <span class="comment-date">${comment.date}</span>
+                                </div>
+                                <div class="comment-text">${comment.text}</div>
                             </div>
-                            <div class="comment-text">${comment.text}</div>
-                        </div>
-                    `;
-                });
+                        `;
+                    });
+                } else {
+                    commentsHtml = '<p style="color: #718096;">Keine Kommentare</p>';
+                }
                 
-                document.getElementById('commentsList').innerHTML = commentsHtml || '<p style="color: #718096;">Keine Kommentare</p>';
+                document.getElementById('commentsList').innerHTML = commentsHtml;
                 
                 document.getElementById('viewPostContent').innerHTML = `
                     <div style="margin-bottom: 15px;">
@@ -1033,16 +1067,18 @@
             const post = posts.find(p => p.id === postId);
             
             if (post) {
+                if (!post.comments) post.comments = [];
+                
                 post.comments.push({
                     author: currentUser.username,
                     text: comment,
-                    date: new Date().toLocaleDateString('de-DE')
+                    date: new Date().toLocaleDateString('de-DE') + ' ' + new Date().toLocaleTimeString('de-DE')
                 });
                 
                 localStorage.setItem('forumPosts', JSON.stringify(posts));
                 
                 document.getElementById('newComment').value = '';
-                viewPost(postId); // Reload comments
+                viewPost(postId);
             }
         };
 
@@ -1105,7 +1141,7 @@
                         <div class="forum-meta">
                             <span>👤 ${post.author}</span>
                             <span>📅 ${post.date}</span>
-                            <span>💬 ${post.comments.length} Kommentare</span>
+                            <span>💬 ${post.comments ? post.comments.length : 0} Kommentare</span>
                         </div>
                         <div class="forum-content">
                             ${post.content.substring(0, 150)}${post.content.length > 150 ? '...' : ''}
@@ -1143,34 +1179,60 @@
             const users = JSON.parse(localStorage.getItem('users'));
             const posts = JSON.parse(localStorage.getItem('forumPosts'));
             
+            const pendingUsers = users.filter(u => u.status === 'ausstehend' && u.username !== 'ImBurni');
+            
             document.getElementById('totalPosts').innerHTML = posts.length;
             document.getElementById('inProgressCount').innerHTML = posts.filter(p => p.status === 'In Arbeit').length;
             document.getElementById('completedCount').innerHTML = posts.filter(p => p.status === 'Abgeschlossen').length;
-            document.getElementById('totalMembers').innerHTML = users.length;
+            document.getElementById('pendingUsers').innerHTML = pendingUsers.length;
             
             // Letzte 3 Beiträge
             const recentPosts = posts.slice(0, 3);
             let recentHtml = '';
             recentPosts.forEach(post => {
                 recentHtml += `
-                    <div class="forum-card" style="margin-bottom: 10px;">
-                        <div style="display: flex; justify-content: space-between;">
+                    <div class="forum-card" style="margin-bottom: 10px; padding: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
                             <span style="font-weight: 600;">${post.title}</span>
-                            <span class="${post.status === 'In Arbeit' ? 'label-inarbeit' : post.status === 'Abgelehnt' ? 'label-abgelehnt' : 'label-abgeschlossen'}">${post.status}</span>
+                            <span class="${post.status === 'In Arbeit' ? 'label-inarbeit' : post.status === 'Abgelehnt' ? 'label-abgelehnt' : 'label-abgeschlossen'}" style="font-size: 11px;">${post.status}</span>
                         </div>
-                        <div style="color: #718096; font-size: 13px; margin-top: 5px;">
+                        <div style="color: #718096; font-size: 12px; margin-top: 5px;">
                             von ${post.author} · ${post.date}
                         </div>
                     </div>
                 `;
             });
             document.getElementById('recentPosts').innerHTML = recentHtml || '<p style="color: #718096;">Keine Beiträge</p>';
+            
+            // Ausstehende Nutzer Liste
+            let pendingHtml = '';
+            if (pendingUsers.length > 0) {
+                pendingUsers.forEach(user => {
+                    pendingHtml += `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #f7fafc; border-radius: 8px; margin-bottom: 8px;">
+                            <div>
+                                <span style="font-weight: 500;">${user.username}</span>
+                                <span style="color: #718096; font-size: 12px; margin-left: 10px;">${user.registeredAt}</span>
+                            </div>
+                            <div>
+                                <button class="btn btn-success" style="padding: 5px 10px; margin-right: 5px;" onclick="approveUser('${user.id}')">✔</button>
+                                <button class="btn btn-danger" style="padding: 5px 10px;" onclick="rejectUser('${user.id}')">✖</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                pendingHtml = '<p style="color: #718096;">Keine ausstehenden Registrierungen</p>';
+            }
+            document.getElementById('pendingUsersList').innerHTML = pendingHtml;
         }
 
         function loadUsers() {
             const users = JSON.parse(localStorage.getItem('users'));
             const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
             const isAdmin = currentUser && currentUser.username === 'ImBurni';
+            
+            console.log('📊 Lade Users für Tabelle:', users);
             
             let html = '';
             users.forEach(user => {
@@ -1181,14 +1243,14 @@
                         <td>${user.username}</td>
                         <td><span class="badge ${user.role === 'Admin' ? 'badge-admin' : 'badge-mod'}">${user.role}</span></td>
                         <td><span class="badge ${user.status === 'aktiv' ? 'badge-active' : 'badge-pending'}">${user.status}</span></td>
-                        <td>${user.registeredAt}</td>
+                        <td>${user.registeredAt || 'Unbekannt'}</td>
                         <td>
                             ${isAdmin ? `
                                 ${user.status === 'ausstehend' ? `
-                                    <button class="btn btn-success" style="padding: 5px 10px; margin-right: 5px;" onclick="approveUser('${user.id}')">✔</button>
-                                    <button class="btn btn-danger" style="padding: 5px 10px;" onclick="rejectUser('${user.id}')">✖</button>
+                                    <button class="btn btn-success" style="padding: 5px 10px; margin-right: 5px;" onclick="approveUser('${user.id}')">✔ Freischalten</button>
+                                    <button class="btn btn-danger" style="padding: 5px 10px;" onclick="rejectUser('${user.id}')">✖ Ablehnen</button>
                                 ` : `
-                                    <button class="btn btn-danger" style="padding: 5px 10px;" onclick="deleteUser('${user.id}')">🗑</button>
+                                    <button class="btn btn-danger" style="padding: 5px 10px;" onclick="deleteUser('${user.id}')">🗑 Löschen</button>
                                 `}
                             ` : ''}
                         </td>
@@ -1197,7 +1259,7 @@
             });
             
             if (users.filter(u => u.username !== 'ImBurni').length === 0) {
-                html = '<tr><td colspan="5" style="text-align: center; padding: 30px;">📭 Keine registrierten Nutzer</td></tr>';
+                html = '<tr><td colspan="5" style="text-align: center; padding: 30px;">📭 Noch keine registrierten Nutzer</td></tr>';
             }
             
             document.getElementById('usersTableBody').innerHTML = html;
@@ -1278,26 +1340,32 @@
 
         // ========== ADMIN FUNKTIONEN ==========
         window.approveUser = function(userId) {
+            console.log('✅ Freischalten von User:', userId);
             let users = JSON.parse(localStorage.getItem('users'));
             users = users.map(u => u.id === userId ? {...u, status: 'aktiv'} : u);
             localStorage.setItem('users', JSON.stringify(users));
+            console.log('📊 Users nach Freischaltung:', users);
             loadUsers();
             loadOverview();
         };
 
         window.rejectUser = function(userId) {
+            console.log('❌ Ablehnen von User:', userId);
             let users = JSON.parse(localStorage.getItem('users'));
             users = users.filter(u => u.id !== userId);
             localStorage.setItem('users', JSON.stringify(users));
+            console.log('📊 Users nach Ablehnung:', users);
             loadUsers();
             loadOverview();
         };
 
         window.deleteUser = function(userId) {
             if (confirm('Nutzer wirklich löschen?')) {
+                console.log('🗑 Löschen von User:', userId);
                 let users = JSON.parse(localStorage.getItem('users'));
                 users = users.filter(u => u.id !== userId);
                 localStorage.setItem('users', JSON.stringify(users));
+                console.log('📊 Users nach Löschung:', users);
                 loadUsers();
                 loadOverview();
             }
@@ -1351,6 +1419,7 @@
 
         console.log('✅ Team Portal mit Forum geladen');
         console.log('Admin: ImBurni / Passwort: admin123');
+        console.log('📊 Aktuelle Users:', JSON.parse(localStorage.getItem('users')));
     </script>
 </body>
 </html>
