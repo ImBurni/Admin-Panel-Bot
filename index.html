@@ -1,1425 +1,609 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team Portal · Admin Dashboard</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        /* Login Box */
-        .login-box {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            width: 450px;
-            margin: 100px auto;
-        }
-        
-        /* Dashboard Layout */
-        .dashboard {
-            background: #f0f2f5;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        /* Sidebar */
-        .sidebar {
-            background: white;
-            width: 280px;
-            height: 100vh;
-            position: fixed;
-            left: 0;
-            top: 0;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-            overflow-y: auto;
-        }
-        
-        .sidebar-header {
-            padding: 30px 20px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        
-        .sidebar-header h2 {
-            color: #2d3748;
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .sidebar-menu {
-            padding: 20px;
-        }
-        
-        .menu-item {
-            padding: 15px 20px;
-            margin: 5px 0;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #4a5568;
-            font-weight: 500;
-        }
-        
-        .menu-item:hover {
-            background: #f7fafc;
-        }
-        
-        .menu-item.active {
-            background: #667eea;
-            color: white;
-        }
-        
-        /* Main Content */
-        .main-content {
-            margin-left: 280px;
-            padding: 30px;
-        }
-        
-        /* Header */
-        .top-header {
-            background: white;
-            border-radius: 15px;
-            padding: 20px 30px;
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .user-avatar {
-            width: 50px;
-            height: 50px;
-            background: #667eea;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 20px;
-        }
-        
-        /* Content Cards */
-        .content-card {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-        
-        .card-header h3 {
-            color: #2d3748;
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        /* Buttons */
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
-            font-size: 14px;
-        }
-        
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: #5a67d8;
-        }
-        
-        .btn-danger {
-            background: #f56565;
-            color: white;
-        }
-        
-        .btn-success {
-            background: #48bb78;
-            color: white;
-        }
-        
-        .btn-warning {
-            background: #ed8936;
-            color: white;
-        }
-        
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .stat-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .stat-card h4 {
-            color: #718096;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-        
-        .stat-card .number {
-            color: #2d3748;
-            font-size: 32px;
-            font-weight: 700;
-        }
-        
-        /* Tables */
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        .table th {
-            text-align: left;
-            padding: 15px;
-            background: #f7fafc;
-            color: #4a5568;
-            font-weight: 600;
-            font-size: 14px;
-        }
-        
-        .table td {
-            padding: 15px;
-            border-bottom: 1px solid #e2e8f0;
-            color: #2d3748;
-        }
-        
-        /* Badges/Labels */
-        .badge {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            display: inline-block;
-        }
-        
-        .badge-admin {
-            background: #faf089;
-            color: #744210;
-        }
-        
-        .badge-mod {
-            background: #bee3f8;
-            color: #2c5282;
-        }
-        
-        .badge-active {
-            background: #c6f6d5;
-            color: #22543d;
-        }
-        
-        .badge-pending {
-            background: #feebc8;
-            color: #7b341e;
-        }
-        
-        /* Status Labels für Forum */
-        .label-inarbeit {
-            background: #667eea;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            display: inline-block;
-        }
-        
-        .label-abgelehnt {
-            background: #f56565;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            display: inline-block;
-        }
-        
-        .label-abgeschlossen {
-            background: #48bb78;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            display: inline-block;
-        }
-        
-        .label-default {
-            background: #cbd5e0;
-            color: #2d3748;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            display: inline-block;
-        }
-        
-        /* Forms */
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #4a5568;
-            font-weight: 500;
-        }
-        
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 14px;
-        }
-        
-        .form-group textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-        
-        /* Forum Cards */
-        .forum-card {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            transition: all 0.3s;
-        }
-        
-        .forum-card:hover {
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .forum-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        
-        .forum-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #2d3748;
-        }
-        
-        .forum-meta {
-            display: flex;
-            gap: 15px;
-            color: #718096;
-            font-size: 13px;
-            margin-bottom: 10px;
-        }
-        
-        .forum-content {
-            color: #4a5568;
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
-        
-        .forum-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #e2e8f0;
-        }
-        
-        .forum-actions {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .comment-section {
-            margin-top: 20px;
-            padding: 20px;
-            background: #f7fafc;
-            border-radius: 10px;
-        }
-        
-        .comment {
-            padding: 15px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        
-        .comment:last-child {
-            border-bottom: none;
-        }
-        
-        .comment-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 13px;
-        }
-        
-        .comment-author {
-            font-weight: 600;
-            color: #2d3748;
-        }
-        
-        .comment-date {
-            color: #718096;
-        }
-        
-        .comment-text {
-            color: #4a5568;
-        }
-        
-        /* Filter Bar */
-        .filter-bar {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
-        
-        .filter-btn {
-            padding: 8px 20px;
-            border: 2px solid #e2e8f0;
-            background: white;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-        
-        .filter-btn:hover {
-            border-color: #667eea;
-        }
-        
-        .filter-btn.active {
-            background: #667eea;
-            border-color: #667eea;
-            color: white;
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        
-        .modal.active {
-            display: flex;
-        }
-        
-        .modal-content {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            width: 500px;
-            max-width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .close {
-            font-size: 24px;
-            cursor: pointer;
-            color: #718096;
-        }
-        
-        .close:hover {
-            color: #2d3748;
-        }
-        
-        .hidden {
-            display: none !important;
-        }
-        
-        .message {
-            text-align: center;
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 10px;
-        }
-        
-        .error {
-            background: #fed7d7;
-            color: #c53030;
-        }
-        
-        .success {
-            background: #c6f6d5;
-            color: #22543d;
-        }
-    </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>IMBURNI │ DER SCHÖPFER │ LIVE STATUS</title>
+  <meta name="description" content="ImBurni – Website-Entwickler, Spieleentwickler, Discord Bot Developer, Minecraft Developer. ECHTZEIT: Twitch Live-Status." />
+  <meta property="og:title" content="IMBURNI │ LIVE STATUS │ Twitch" />
+  <meta property="og:description" content="Bot-Gott, Game-Dev, Code-Künstler. Automatischer Live-Check!" />
+  <meta property="og:type" content="website" />
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,600;14..32,800;14..32,900&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --neon-cyan: #00f3ff;
+      --neon-pink: #ff0ae0;
+      --neon-purple: #b300ff;
+      --neon-lime: #00ffaa;
+      --neon-red: #ff3366;
+      --bg-void: #03030f;
+      --card-bg: rgba(8, 8, 20, 0.65);
+      --text-glow: #eef5ff;
+    }
+
+    body {
+      background: radial-gradient(ellipse at 20% 30%, #0a0a1a, #000000);
+      font-family: 'Inter', system-ui, sans-serif;
+      color: var(--text-glow);
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    .energy-field {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: 
+        radial-gradient(circle at 10% 20%, rgba(0, 255, 200, 0.08), transparent 50%),
+        radial-gradient(circle at 90% 70%, rgba(255, 0, 200, 0.08), transparent 55%),
+        repeating-linear-gradient(45deg, rgba(255,0,180,0.02) 0px, rgba(255,0,180,0.02) 2px, transparent 2px, transparent 8px);
+      animation: warpShift 12s infinite alternate;
+    }
+
+    @keyframes warpShift {
+      0% { transform: scale(1) rotate(0deg); opacity: 0.6; }
+      100% { transform: scale(1.1) rotate(1deg); opacity: 1; }
+    }
+
+    #particle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .glitch-box {
+      position: relative;
+      animation: glitchFloat 3s infinite;
+    }
+
+    @keyframes glitchFloat {
+      0%, 100% { transform: translate(0, 0); }
+      95% { transform: translate(2px, -1px); text-shadow: -3px 0 var(--neon-pink), 3px 0 var(--neon-cyan); }
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 32px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .super-nav {
+      position: sticky;
+      top: 20px;
+      z-index: 100;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(20px);
+      border-radius: 80px;
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      margin: 20px auto;
+      width: fit-content;
+      max-width: 90%;
+      padding: 8px 24px;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+    }
+
+    .nav-flex {
+      display: flex;
+      gap: 28px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .nav-flex a {
+      color: #ddd;
+      text-decoration: none;
+      font-weight: 800;
+      letter-spacing: 1px;
+      transition: 0.2s;
+      padding: 8px 0;
+    }
+
+    .nav-flex a:hover {
+      color: var(--neon-cyan);
+      text-shadow: 0 0 8px cyan;
+    }
+
+    .hero {
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      margin: 40px 0 60px;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .hero-content {
+      flex: 1.5;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #ff0ae0, #7000ff);
+      padding: 6px 18px;
+      border-radius: 40px;
+      font-weight: 900;
+      font-size: 0.8rem;
+      margin-bottom: 24px;
+      box-shadow: 0 0 20px #ff0ae0;
+    }
+
+    .hero h1 {
+      font-size: clamp(48px, 9vw, 130px);
+      font-weight: 900;
+      background: linear-gradient(135deg, #fff, var(--neon-cyan), var(--neon-pink));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      line-height: 1;
+      margin-bottom: 20px;
+    }
+
+    .skill-rainbow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin: 28px 0;
+    }
+
+    .skill-tag {
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(0, 255, 255, 0.5);
+      padding: 12px 24px;
+      border-radius: 60px;
+      font-weight: 800;
+      backdrop-filter: blur(5px);
+      transition: all 0.2s ease;
+      font-size: 1rem;
+    }
+
+    .skill-tag:hover {
+      transform: scale(1.05);
+      border-color: var(--neon-pink);
+      box-shadow: 0 0 18px var(--neon-pink);
+    }
+
+    .live-stats {
+      display: flex;
+      gap: 25px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+    }
+
+    .stat-card-live {
+      background: linear-gradient(145deg, rgba(0,0,0,0.7), rgba(20,10,40,0.6));
+      backdrop-filter: blur(16px);
+      border-radius: 32px;
+      padding: 28px 32px;
+      border: 1px solid rgba(0, 255, 255, 0.4);
+      min-width: 200px;
+      text-align: center;
+      transition: all 0.25s ease;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      cursor: pointer;
+      text-decoration: none;
+      color: white;
+      display: block;
+    }
+
+    .stat-card-live:hover {
+      transform: translateY(-6px);
+      border-color: var(--neon-pink);
+      box-shadow: 0 0 25px rgba(255,0,200,0.3);
+    }
+
+    .live-indicator {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #555;
+      margin-right: 10px;
+      animation: pulseLive 1.5s infinite;
+    }
+
+    .live-indicator.live {
+      background: #ff3366;
+      box-shadow: 0 0 12px #ff3366;
+      animation: pulseLive 0.8s infinite;
+    }
+
+    @keyframes pulseLive {
+      0% { opacity: 0.4; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .platform-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+    }
+
+    .platform-name {
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .status-text {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-top: 8px;
+    }
+
+    .live-badge {
+      display: inline-block;
+      background: rgba(255,51,102,0.25);
+      padding: 4px 12px;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      font-weight: 900;
+      margin-top: 8px;
+    }
+
+    .profile-orb {
+      flex: 0.8;
+      display: flex;
+      justify-content: center;
+    }
+
+    .orb {
+      width: 280px;
+      height: 280px;
+      background: linear-gradient(145deg, #ff00aa33, #00ddff33);
+      border-radius: 50%;
+      box-shadow: 0 0 70px rgba(0, 255, 255, 0.5), inset 0 0 40px rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(2px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 6rem;
+      animation: pulseOrb 4s infinite alternate;
+    }
+
+    @keyframes pulseOrb {
+      0% { transform: scale(1); box-shadow: 0 0 40px cyan; }
+      100% { transform: scale(1.05); box-shadow: 0 0 100px #ff00cc; }
+    }
+
+    .section-title {
+      font-size: 2.4rem;
+      font-weight: 800;
+      margin: 50px 0 20px;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: inline-block;
+    }
+
+    .skill-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+      margin: 30px 0;
+    }
+
+    .skill-card {
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(16px);
+      border-radius: 32px;
+      padding: 28px 20px;
+      border: 1px solid rgba(0, 255, 255, 0.25);
+      transition: 0.25s ease;
+    }
+
+    .skill-card:hover {
+      transform: translateY(-10px);
+      border-color: var(--neon-pink);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(255, 0, 200, 0.3);
+    }
+
+    .skill-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      flex-wrap: wrap;
+      margin: 48px 0;
+    }
+
+    .social-btn {
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 80px;
+      padding: 18px 36px;
+      font-weight: 900;
+      font-size: 1.3rem;
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(0, 255, 255, 0.5);
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: white;
+    }
+
+    .social-btn.youtube:hover { background: #ff0000cc; transform: scale(1.05); box-shadow: 0 0 40px red; }
+    .social-btn.twitch:hover { background: #9146ffcc; transform: scale(1.05); box-shadow: 0 0 40px #9146ff; }
+    .social-btn.discord:hover { background: #5865F2cc; transform: scale(1.05); box-shadow: 0 0 40px #5865F2; }
+
+    .footer-zone {
+      text-align: center;
+      padding: 48px 0;
+      border-top: 1px solid rgba(0, 255, 255, 0.2);
+      margin-top: 80px;
+      color: #aaa;
+    }
+
+    .last-updated {
+      font-size: 0.7rem;
+      margin-top: 12px;
+      opacity: 0.7;
+    }
+
+    @media (max-width: 900px) {
+      .hero { flex-direction: column; text-align: center; }
+      .live-stats { justify-content: center; }
+    }
+  </style>
 </head>
 <body>
-    <!-- LOGIN -->
-    <div id="loginPage" class="login-box">
-        <h2 style="text-align: center; margin-bottom: 30px;">🔐 Team Portal Login</h2>
-        <input type="text" id="username" placeholder="Benutzername" style="width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #e2e8f0; border-radius: 10px;">
-        <input type="password" id="password" placeholder="Passwort" style="width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #e2e8f0; border-radius: 10px;">
-        <button onclick="handleLogin()" style="width: 100%; padding: 15px; background: #667eea; color: white; border: none; border-radius: 10px; margin: 10px 0; cursor: pointer;">Einloggen</button>
-        <button onclick="showRegister()" style="width: 100%; padding: 15px; background: #48bb78; color: white; border: none; border-radius: 10px; cursor: pointer;">Registrieren</button>
-        <div id="loginMessage" class="message"></div>
-    </div>
 
-    <!-- REGISTER -->
-    <div id="registerPage" class="login-box hidden">
-        <h2 style="text-align: center; margin-bottom: 30px;">📝 Registrieren</h2>
-        <input type="text" id="regUsername" placeholder="Benutzername" style="width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #e2e8f0; border-radius: 10px;">
-        <input type="password" id="regPassword" placeholder="Passwort (min. 4 Zeichen)" style="width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #e2e8f0; border-radius: 10px;">
-        <button onclick="handleRegister()" style="width: 100%; padding: 15px; background: #48bb78; color: white; border: none; border-radius: 10px; margin: 10px 0; cursor: pointer;">Registrieren</button>
-        <button onclick="backToLogin()" style="width: 100%; padding: 15px; background: #718096; color: white; border: none; border-radius: 10px; cursor: pointer;">Zurück</button>
-        <div id="registerMessage" class="message"></div>
-    </div>
+<canvas id="particle-canvas"></canvas>
+<div class="energy-field"></div>
 
-    <!-- DASHBOARD -->
-    <div id="dashboard" class="dashboard hidden">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <h2>👥 Team Portal</h2>
-            </div>
-            <div class="sidebar-menu">
-                <div class="menu-item active" onclick="switchTab('overview', this)">
-                    📊 Übersicht
-                </div>
-                <div class="menu-item" onclick="switchTab('forum', this)">
-                    💬 Forum
-                </div>
-                <div class="menu-item" onclick="switchTab('users', this)">
-                    👥 Nutzerverwaltung
-                </div>
-                <div class="menu-item" onclick="switchTab('updates', this)">
-                    📢 Updates
-                </div>
-                <div class="menu-item" onclick="switchTab('teaminfo', this)">
-                    ℹ️ Team-Info
-                </div>
-            </div>
-        </div>
+<div class="super-nav">
+  <div class="nav-flex">
+    <a href="#home">🔥 HOME</a>
+    <a href="#skills">💠 SKILLS</a>
+    <a href="#projects">🎮 PROJEKTE</a>
+    <a href="#social">📡 SOCIAL</a>
+  </div>
+</div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Top Header -->
-            <div class="top-header">
-                <h3 id="currentPageTitle">Übersicht</h3>
-                <div class="user-info">
-                    <div class="user-avatar" id="headerAvatar">I</div>
-                    <span id="headerUserName" style="font-weight: 500;"></span>
-                    <button onclick="handleLogout()" class="btn btn-danger" style="margin-left: 15px;">Abmelden</button>
-                </div>
-            </div>
+<main class="container">
+  <div id="home" class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">✦ DIGITALER GOTT DES CODE ✦</div>
+      <h1 class="glitch-box">IMBURNI</h1>
+      <p style="font-size: 1.3rem; line-height: 1.5; color: #ccddee;">Website-Ersteller · Spieleentwickler · Discord Bot Developer<br>Minecraft Developer · Twitch Integration Spezialist</p>
+      <div class="skill-rainbow">
+        <div class="skill-tag">⚡ DISCORD BOT DEV</div>
+        <div class="skill-tag">🎮 SPIELEENTWICKLER</div>
+        <div class="skill-tag">🕹️ MINECRAFT PLUGINS</div>
+        <div class="skill-tag">🌐 WEBSITE-EXPERTE</div>
+        <div class="skill-tag">🔌 TWITCH API GOTT</div>
+        <div class="skill-tag">🤖 BOT FUNKTIONSMEISTER</div>
+      </div>
 
-            <!-- Overview Tab -->
-            <div id="overviewTab" class="tab-content">
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <h4>Forum Beiträge</h4>
-                        <div class="number" id="totalPosts">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h4>In Arbeit</h4>
-                        <div class="number" id="inProgressCount">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h4>Abgeschlossen</h4>
-                        <div class="number" id="completedCount">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h4>Ausstehende Nutzer</h4>
-                        <div class="number" id="pendingUsers">0</div>
-                    </div>
-                </div>
-
-                <!-- Letzte Forum Beiträge -->
-                <div class="content-card">
-                    <div class="card-header">
-                        <h3>💬 Letzte Forum Beiträge</h3>
-                        <button class="btn btn-primary" onclick="switchTab('forum', document.querySelectorAll('.menu-item')[1])">Zum Forum</button>
-                    </div>
-                    <div id="recentPosts"></div>
-                </div>
-
-                <!-- Ausstehende Nutzer -->
-                <div class="content-card">
-                    <div class="card-header">
-                        <h3>⏳ Ausstehende Registrierungen</h3>
-                        <button class="btn btn-primary" onclick="switchTab('users', document.querySelectorAll('.menu-item')[2])">Verwalten</button>
-                    </div>
-                    <div id="pendingUsersList"></div>
-                </div>
-            </div>
-
-            <!-- Forum Tab -->
-            <div id="forumTab" class="tab-content hidden">
-                <div class="content-card">
-                    <div class="card-header">
-                        <h3>💬 Team Forum</h3>
-                        <button class="btn btn-success" onclick="showNewPostModal()">+ Neuer Beitrag</button>
-                    </div>
-
-                    <!-- Filter Buttons -->
-                    <div class="filter-bar">
-                        <button class="filter-btn active" onclick="filterForum('all', this)">Alle</button>
-                        <button class="filter-btn" onclick="filterForum('In Arbeit', this)">In Arbeit</button>
-                        <button class="filter-btn" onclick="filterForum('Abgelehnt', this)">Abgelehnt</button>
-                        <button class="filter-btn" onclick="filterForum('Abgeschlossen', this)">Abgeschlossen</button>
-                    </div>
-
-                    <!-- Forum Posts -->
-                    <div id="forumPosts"></div>
-                </div>
-            </div>
-
-            <!-- Users Tab -->
-            <div id="usersTab" class="tab-content hidden">
-                <div class="content-card">
-                    <div class="card-header">
-                        <h3>👥 Nutzerverwaltung</h3>
-                    </div>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Benutzername</th>
-                                <th>Rolle</th>
-                                <th>Status</th>
-                                <th>Registriert</th>
-                                <th>Aktionen</th>
-                            </tr>
-                        </thead>
-                        <tbody id="usersTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Updates Tab -->
-            <div id="updatesTab" class="tab-content hidden">
-                <div class="content-card">
-                    <div class="card-header">
-                        <h3>📢 Updates</h3>
-                        <button class="btn btn-success" onclick="showUpdateModal()">+ Neues Update</button>
-                    </div>
-                    <div id="updatesList"></div>
-                </div>
-            </div>
-
-            <!-- Team Info Tab -->
-            <div id="teaminfoTab" class="tab-content hidden">
-                <div class="content-card">
-                    <div class="card-header">
-                        <h3>ℹ️ Team-Info</h3>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Team Name</label>
-                        <input type="text" id="teamName" placeholder="z.B. Moderations-Team">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Team Beschreibung</label>
-                        <textarea id="teamDescription" placeholder="Beschreibe dein Team..."></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Kontakt Email</label>
-                        <input type="email" id="teamEmail" placeholder="team@example.com">
-                    </div>
-                    
-                    <button class="btn btn-success" onclick="saveTeamInfo()">Team-Info speichern</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- New Post Modal -->
-    <div id="newPostModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Neuen Forum Beitrag erstellen</h3>
-                <span class="close" onclick="closeModal('newPostModal')">&times;</span>
-            </div>
-            
-            <div class="form-group">
-                <label>Titel</label>
-                <input type="text" id="postTitle" placeholder="Titel des Beitrags">
-            </div>
-            
-            <div class="form-group">
-                <label>Status</label>
-                <select id="postStatus">
-                    <option value="In Arbeit">In Arbeit</option>
-                    <option value="Abgelehnt">Abgelehnt</option>
-                    <option value="Abgeschlossen">Abgeschlossen</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label>Inhalt</label>
-                <textarea id="postContent" placeholder="Schreibe deinen Beitrag..."></textarea>
-            </div>
-            
-            <button class="btn btn-success" onclick="createPost()">Beitrag erstellen</button>
-        </div>
-    </div>
-
-    <!-- View Post Modal -->
-    <div id="viewPostModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="viewPostTitle"></h3>
-                <span class="close" onclick="closeModal('viewPostModal')">&times;</span>
-            </div>
-            
-            <div id="viewPostContent"></div>
-            
-            <div style="margin-top: 20px;">
-                <h4>Kommentare</h4>
-                <div id="commentsList" style="margin: 20px 0;"></div>
-                
-                <div class="form-group">
-                    <label>Neuer Kommentar</label>
-                    <textarea id="newComment" placeholder="Schreibe einen Kommentar..." rows="3"></textarea>
-                </div>
-                
-                <button class="btn btn-primary" onclick="addComment()">Kommentar hinzufügen</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Update Modal -->
-    <div id="updateModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Neues Update</h3>
-                <span class="close" onclick="closeModal('updateModal')">&times;</span>
-            </div>
-            
-            <div class="form-group">
-                <label>Titel</label>
-                <input type="text" id="updateTitle" placeholder="z.B. Wichtige Ankündigung">
-            </div>
-            
-            <div class="form-group">
-                <label>Inhalt</label>
-                <textarea id="updateContent" placeholder="Update-Text..."></textarea>
-            </div>
-            
-            <button class="btn btn-success" onclick="createUpdate()">Update veröffentlichen</button>
-        </div>
-    </div>
-
-    <script>
-        // ========== INITIALISIERUNG ==========
+      <!-- LIVE STATUS KARTEN - Klickbare Links, nur Status-Anzeige -->
+      <div class="live-stats">
+        <a href="https://twitch.tv/ImBurni" target="_blank" class="stat-card-live" id="twitchCard">
+          <div class="platform-icon">🎮</div>
+          <div class="platform-name">TWITCH.TV/IMBURNI</div>
+          <div><span class="live-indicator" id="twitchLiveDot"></span></div>
+          <div class="status-text" id="twitchStatusText">Lade Status...</div>
+          <div id="twitchGameText" style="font-size: 0.7rem; opacity: 0.7; margin-top: 6px;"></div>
+        </a>
         
-        // Admin anlegen
-        const adminHash = CryptoJS.SHA256('admin123').toString();
+        <a href="https://youtube.com/@ImBurni" target="_blank" class="stat-card-live" id="youtubeCard">
+          <div class="platform-icon">📺</div>
+          <div class="platform-name">YOUTUBE/@IMBURNI</div>
+          <div class="status-text" style="font-size: 0.85rem;">Zum Kanal →</div>
+        </a>
         
-        // Users initialisieren - OHNE vorhandene Daten zu löschen!
-        let users = [];
-        
-        // Prüfen ob schon Users existieren
-        if (localStorage.getItem('users')) {
-            users = JSON.parse(localStorage.getItem('users'));
-            console.log('📊 Vorhandene Users geladen:', users);
-        } else {
-            // Erste Initialisierung
-            users = [
-                {
-                    id: '1',
-                    username: 'ImBurni',
-                    passwordHash: adminHash,
-                    role: 'Admin',
-                    status: 'aktiv',
-                    registeredAt: new Date().toLocaleDateString('de-DE') + ' ' + new Date().toLocaleTimeString('de-DE')
-                }
-            ];
-            localStorage.setItem('users', JSON.stringify(users));
-            console.log('✅ Admin wurde angelegt');
-        }
+        <a href="https://discord.gg/uebdFtUSeA" target="_blank" class="stat-card-live" id="discordCard">
+          <div class="platform-icon">💬</div>
+          <div class="platform-name">DISCORD</div>
+          <div class="status-text" style="font-size: 0.85rem;">Community beitreten →</div>
+        </a>
+      </div>
+      <div class="last-updated" id="lastUpdated">Live-Status wird aktualisiert...</div>
+    </div>
+    <div class="profile-orb">
+      <div class="orb">👑</div>
+    </div>
+  </div>
 
-        // Forum Posts initialisieren
-        if (!localStorage.getItem('forumPosts')) {
-            const forumPosts = [
-                {
-                    id: '1',
-                    title: 'Willkommen im Team Forum',
-                    content: 'Hier können Teammitglieder diskutieren und Aufgaben verwalten.',
-                    status: 'Abgeschlossen',
-                    author: 'ImBurni',
-                    date: new Date().toLocaleDateString('de-DE'),
-                    comments: []
-                }
-            ];
-            localStorage.setItem('forumPosts', JSON.stringify(forumPosts));
-        }
+  <section id="skills">
+    <span class="section-title">⚡ ÜBELSTE SKILLS / EXPERTISE ⚡</span>
+    <div class="skill-grid">
+      <div class="skill-card"><div class="skill-icon">🤖</div><h3>Discord Bot Entwicklung</h3><p>Komplette Bot-Infrastruktur, Ticketsysteme, Economy, Level, Lurk, Timeout Systeme, Bridge zu Twitch – alles maßgeschneidert.</p></div>
+      <div class="skill-card"><div class="skill-icon">🎮</div><h3>Spieleentwicklung</h3><p>Unity, Unreal Engine, Game Design, eigene Mechanics – von kleinen Indies bis zu komplexen Welten.</p></div>
+      <div class="skill-card"><div class="skill-icon">🪓</div><h3>Minecraft Developer</h3><p>Custom Plugins (Paper/Spigot), Minigames, OP-Items, komplexe Datenbanksysteme, Rangsysteme.</p></div>
+      <div class="skill-card"><div class="skill-icon">🌐</div><h3>Website-Engineering</h3><p>Next-Level Frontends, brutale Animationen, 3D-Effekte, moderne Frameworks, Performance-Monster.</p></div>
+      <div class="skill-card"><div class="skill-icon">📺</div><h3>Twitch + Discord Bridge</h3><p>EventSub, Follow-Alerts, Raid-Detection, Chat-Bridge, VIP-Systeme, Punkte & Gamble – next Level Integration.</p></div>
+      <div class="skill-card"><div class="skill-icon">🧠</div><h3>Bot Funktionen Deluxe</h3><p>Eigene Timeout-IDs, Ticketsystem mit Buttons, Gewinnspiel-Verwaltung, VIP-Vergabe, Lurk, Level, Leaderboards, Benutzerregistrierung.</p></div>
+    </div>
+  </section>
 
-        // Updates initialisieren
-        if (!localStorage.getItem('updates')) {
-            const updates = [
-                {
-                    id: '1',
-                    title: 'Willkommen im Team Portal',
-                    content: 'Hier werden alle wichtigen Updates für das Team veröffentlicht.',
-                    date: new Date().toLocaleDateString('de-DE'),
-                    author: 'ImBurni'
-                }
-            ];
-            localStorage.setItem('updates', JSON.stringify(updates));
-        }
+  <section id="projects">
+    <span class="section-title">🔥 MEGA PROJEKTE & HIGHLIGHTS 🔥</span>
+    <div class="skill-grid">
+      <div class="skill-card"><div class="skill-icon">🤖</div><h3>ImBurni_Bot_v1</h3><p>Der legendäre Twitch-Discord-Bot mit eigenem Timeout-System (IDs), VIP-Gewinnspielen, Ticket-Support mit Buttons, Punkten, Lurk, Level, Raid-Erkennung, Auto-Shoutouts und Zuschauer-Registrierung (!register).</p></div>
+      <div class="skill-card"><div class="skill-icon">⚡</div><h3>Custom Ticket-Support</h3><p>Discord Ticketsystem mit Status-Buttons (In Bearbeitung/Beantwortet/Schließen), voll automatisiert mit Logging, Transcripts und Berechtigungssystem.</p></div>
+      <div class="skill-card"><div class="skill-icon">🎲</div><h3>Punkte & Gamble Engine</h3><p>Wirtschaftssystem für Twitch-Chat: !gamble, !gamble all, Top-Listen, Lurk-Belohnungen, tägliche Boni – alles mit Datenbank-Persistenz.</p></div>
+      <div class="skill-card"><div class="skill-icon">🔮</div><h3>Zuschauer-Registrierung</h3><p>!register im Chat speichert Nutzer mit Twitch-Profilbild, Registrierungsdatum – automatische Anzeige auf der Live-Website.</p></div>
+      <div class="skill-card"><div class="skill-icon">🎨</div><h3>Custom Dashboard</h3><p>Web-basiertes Admin-Dashboard für Streamer: Timeout-Gründe, VIP-Listen, Gewinnspiel-Modus, Live-Statistiken.</p></div>
+      <div class="skill-card"><div class="skill-icon">🔄</div><h3>Twitch-Discord Bridge Pro</h3><p>Bidirektionale Chat-Bridge, Follow-Embeds, Raid-Benachrichtigungen, automatische Shoutouts, Game-Änderungen.</p></div>
+    </div>
+  </section>
 
-        // Team Info initialisieren
-        if (!localStorage.getItem('teamInfo')) {
-            const teamInfo = {
-                name: 'Moderations-Team',
-                description: 'Wir sind das offizielle Moderations-Team.',
-                email: 'team@example.com'
-            };
-            localStorage.setItem('teamInfo', JSON.stringify(teamInfo));
-        }
+  <section id="social">
+    <span class="section-title">📡 FOLGE MIR – BETRETE DIE META 📡</span>
+    <div class="social-links">
+      <a href="https://youtube.com/@ImBurni" target="_blank" class="social-btn youtube">🎬 YouTube / @ImBurni</a>
+      <a href="https://twitch.tv/ImBurni" target="_blank" class="social-btn twitch">📺 Twitch / ImBurni</a>
+      <a href="https://discord.gg/uebdFtUSeA" target="_blank" class="social-btn discord">💬 Discord Community</a>
+    </div>
+    <div style="background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); border-radius: 48px; padding: 28px; margin: 40px 0; text-align: center; border: 1px solid cyan;">
+      <div style="font-size: 1.5rem; font-weight: bold;">🧬 "Ich entwickle nicht nur Bots – ich erschaffe digitale Ökosysteme." 🧬</div>
+      <div style="margin-top: 12px;">Website-Dev • Game-Dev • Discord-Bot-Master • Minecraft-Magier • Twitch-Integrator</div>
+    </div>
+  </section>
 
-        // ========== LOGIN ==========
-        window.handleLogin = function() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            if (!username || !password) {
-                showLoginMessage('❌ Bitte alles ausfüllen', 'error');
-                return;
-            }
+  <div class="footer-zone">
+    <div>© IMBURNI – Der Entwickler, der die Grenzen sprengt</div>
+    <div style="margin-top: 12px;">🔥 Discord Bot Entwicklung • Spieleentwicklung • Minecraft Plugins • Twitch Integration 🔥</div>
+    <div style="margin-top: 12px; font-size: 0.7rem;">Folgt mir auf Twitch & YouTube – neuste Projekte, Bots und Dev-Streams</div>
+  </div>
+</main>
 
-            const users = JSON.parse(localStorage.getItem('users'));
-            console.log('📊 Login Versuch - Alle Users:', users);
-            
-            const passwordHash = CryptoJS.SHA256(password).toString();
-            const user = users.find(u => u.username === username && u.passwordHash === passwordHash);
+<script>
+  // ========= PARTIKEL SYSTEM =========
+  const canvas = document.getElementById('particle-canvas');
+  const ctx = canvas.getContext('2d');
+  let width = window.innerWidth, height = window.innerHeight;
+  let particles = [];
 
-            if (!user) {
-                showLoginMessage('❌ Falscher Benutzername oder Passwort', 'error');
-                return;
-            }
+  function resizeCanvas() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+  }
 
-            if (user.status !== 'aktiv') {
-                showLoginMessage('⏳ Account noch nicht freigeschaltet', 'error');
-                return;
-            }
+  class Particle {
+    constructor() {
+      this.x = Math.random() * width;
+      this.y = Math.random() * height;
+      this.size = Math.random() * 2.5 + 0.8;
+      this.speedX = (Math.random() - 0.5) * 0.6;
+      this.speedY = (Math.random() - 0.5) * 0.4;
+      this.color = `hsl(${Math.random() * 60 + 280}, 100%, 65%)`;
+    }
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      if (this.x < 0) this.x = width;
+      if (this.x > width) this.x = 0;
+      if (this.y < 0) this.y = height;
+      if (this.y > height) this.y = 0;
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = this.color;
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = '#ff00cc';
+      ctx.fill();
+    }
+  }
 
-            sessionStorage.setItem('currentUser', JSON.stringify(user));
-            
-            document.getElementById('loginPage').classList.add('hidden');
-            document.getElementById('dashboard').classList.remove('hidden');
-            
-            updateHeader();
-            loadAllData();
-        };
+  function initParticles(count) {
+    particles = [];
+    for (let i = 0; i < count; i++) particles.push(new Particle());
+  }
 
-        function showLoginMessage(text, type) {
-            const msg = document.getElementById('loginMessage');
-            msg.innerHTML = text;
-            msg.className = 'message ' + type;
-        }
+  function animateParticles() {
+    ctx.clearRect(0, 0, width, height);
+    for (let p of particles) { p.update(); p.draw(); }
+    requestAnimationFrame(animateParticles);
+  }
 
-        // ========== REGISTER ==========
-        window.handleRegister = function() {
-            const username = document.getElementById('regUsername').value.trim();
-            const password = document.getElementById('regPassword').value;
-            const msgBox = document.getElementById('registerMessage');
-            
-            console.log('📝 Registrierungsversuch:', username);
-            
-            if (!username || !password) {
-                msgBox.innerHTML = '❌ Bitte alles ausfüllen';
-                msgBox.className = 'message error';
-                return;
-            }
+  window.addEventListener('resize', () => { resizeCanvas(); initParticles(150); });
+  resizeCanvas();
+  initParticles(180);
+  animateParticles();
 
-            if (password.length < 4) {
-                msgBox.innerHTML = '❌ Passwort zu kurz (min. 4 Zeichen)';
-                msgBox.className = 'message error';
-                return;
-            }
+  // ========= CURSOR TRAIL =========
+  const trail = [];
+  document.addEventListener('mousemove', (e) => {
+    trail.push({ x: e.clientX, y: e.clientY, life: 1 });
+    if (trail.length > 15) trail.shift();
+  });
 
-            let users = JSON.parse(localStorage.getItem('users'));
-            console.log('📊 Vorhandene Users vor Registrierung:', users);
-            
-            if (users.find(u => u.username === username)) {
-                msgBox.innerHTML = '❌ Benutzername bereits vergeben';
-                msgBox.className = 'message error';
-                return;
-            }
+  function drawTrail() {
+    if (!ctx) return;
+    for (let i = 0; i < trail.length; i++) {
+      const t = trail[i];
+      ctx.beginPath();
+      ctx.arc(t.x, t.y, 5 * t.life, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0, 255, 200, ${0.4 * t.life})`;
+      ctx.fill();
+      t.life -= 0.03;
+    }
+    requestAnimationFrame(drawTrail);
+  }
+  drawTrail();
 
-            const newUser = {
-                id: Date.now().toString(),
-                username: username,
-                passwordHash: CryptoJS.SHA256(password).toString(),
-                role: 'Moderator',
-                status: 'ausstehend',
-                registeredAt: new Date().toLocaleDateString('de-DE') + ' ' + new Date().toLocaleTimeString('de-DE')
-            };
-
-            users.push(newUser);
-            localStorage.setItem('users', JSON.stringify(users));
-            
-            console.log('✅ Neuer User registriert:', newUser);
-            console.log('📊 Alle Users nach Registrierung:', JSON.parse(localStorage.getItem('users')));
-            
-            msgBox.innerHTML = '✅ Registrierung erfolgreich! Admin muss freischalten.';
-            msgBox.className = 'message success';
-            
-            document.getElementById('regUsername').value = '';
-            document.getElementById('regPassword').value = '';
-            
-            // Wenn Admin eingeloggt ist, Tabelle aktualisieren
-            if (sessionStorage.getItem('currentUser')) {
-                loadUsers();
-                loadOverview();
-            }
-            
-            setTimeout(backToLogin, 2000);
-        };
-
-        // ========== TAB SWITCHING ==========
-        window.switchTab = function(tab, element) {
-            document.querySelectorAll('.menu-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            element.classList.add('active');
-            
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.add('hidden');
-            });
-            
-            document.getElementById(tab + 'Tab').classList.remove('hidden');
-            
-            const titles = {
-                overview: 'Übersicht',
-                forum: 'Forum',
-                users: 'Nutzerverwaltung',
-                updates: 'Updates',
-                teaminfo: 'Team-Info'
-            };
-            document.getElementById('currentPageTitle').innerHTML = titles[tab];
-            
-            if (tab === 'forum') loadForumPosts();
-            if (tab === 'users') loadUsers();
-            if (tab === 'updates') loadUpdates();
-            if (tab === 'teaminfo') loadTeamInfoForEdit();
-        };
-
-        // ========== FORUM FUNKTIONEN ==========
-        window.showNewPostModal = function() {
-            document.getElementById('newPostModal').classList.add('active');
-        };
-
-        window.createPost = function() {
-            const title = document.getElementById('postTitle').value;
-            const status = document.getElementById('postStatus').value;
-            const content = document.getElementById('postContent').value;
-            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-            
-            if (!title || !content) {
-                alert('❌ Bitte Titel und Inhalt ausfüllen');
-                return;
-            }
-            
-            const posts = JSON.parse(localStorage.getItem('forumPosts'));
-            const newPost = {
-                id: Date.now().toString(),
-                title: title,
-                content: content,
-                status: status,
-                author: currentUser.username,
-                date: new Date().toLocaleDateString('de-DE'),
-                comments: []
-            };
-            
-            posts.unshift(newPost);
-            localStorage.setItem('forumPosts', JSON.stringify(posts));
-            
-            closeModal('newPostModal');
-            document.getElementById('postTitle').value = '';
-            document.getElementById('postContent').value = '';
-            
-            loadForumPosts();
-            loadOverview();
-        };
-
-        window.viewPost = function(postId) {
-            const posts = JSON.parse(localStorage.getItem('forumPosts'));
-            const post = posts.find(p => p.id === postId);
-            
-            if (post) {
-                document.getElementById('viewPostTitle').innerHTML = post.title;
-                
-                let statusClass = 'label-default';
-                if (post.status === 'In Arbeit') statusClass = 'label-inarbeit';
-                if (post.status === 'Abgelehnt') statusClass = 'label-abgelehnt';
-                if (post.status === 'Abgeschlossen') statusClass = 'label-abgeschlossen';
-                
-                let commentsHtml = '';
-                if (post.comments && post.comments.length > 0) {
-                    post.comments.forEach(comment => {
-                        commentsHtml += `
-                            <div class="comment">
-                                <div class="comment-header">
-                                    <span class="comment-author">${comment.author}</span>
-                                    <span class="comment-date">${comment.date}</span>
-                                </div>
-                                <div class="comment-text">${comment.text}</div>
-                            </div>
-                        `;
-                    });
-                } else {
-                    commentsHtml = '<p style="color: #718096;">Keine Kommentare</p>';
-                }
-                
-                document.getElementById('commentsList').innerHTML = commentsHtml;
-                
-                document.getElementById('viewPostContent').innerHTML = `
-                    <div style="margin-bottom: 15px;">
-                        <span class="${statusClass}">${post.status}</span>
-                        <span style="margin-left: 15px; color: #718096;">von ${post.author} · ${post.date}</span>
-                    </div>
-                    <p style="color: #4a5568; line-height: 1.6;">${post.content}</p>
-                `;
-                
-                // Post ID für Kommentare speichern
-                document.getElementById('viewPostModal').setAttribute('data-post-id', postId);
-                document.getElementById('viewPostModal').classList.add('active');
-            }
-        };
-
-        window.addComment = function() {
-            const comment = document.getElementById('newComment').value;
-            const postId = document.getElementById('viewPostModal').getAttribute('data-post-id');
-            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-            
-            if (!comment) {
-                alert('❌ Bitte Kommentar eingeben');
-                return;
-            }
-            
-            const posts = JSON.parse(localStorage.getItem('forumPosts'));
-            const post = posts.find(p => p.id === postId);
-            
-            if (post) {
-                if (!post.comments) post.comments = [];
-                
-                post.comments.push({
-                    author: currentUser.username,
-                    text: comment,
-                    date: new Date().toLocaleDateString('de-DE') + ' ' + new Date().toLocaleTimeString('de-DE')
-                });
-                
-                localStorage.setItem('forumPosts', JSON.stringify(posts));
-                
-                document.getElementById('newComment').value = '';
-                viewPost(postId);
-            }
-        };
-
-        window.changePostStatus = function(postId, newStatus) {
-            const posts = JSON.parse(localStorage.getItem('forumPosts'));
-            const post = posts.find(p => p.id === postId);
-            
-            if (post) {
-                post.status = newStatus;
-                localStorage.setItem('forumPosts', JSON.stringify(posts));
-                loadForumPosts();
-            }
-        };
-
-        window.deletePost = function(postId) {
-            if (confirm('Beitrag wirklich löschen?')) {
-                let posts = JSON.parse(localStorage.getItem('forumPosts'));
-                posts = posts.filter(p => p.id !== postId);
-                localStorage.setItem('forumPosts', JSON.stringify(posts));
-                loadForumPosts();
-                loadOverview();
-            }
-        };
-
-        let currentFilter = 'all';
-        
-        window.filterForum = function(filter, element) {
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            element.classList.add('active');
-            currentFilter = filter;
-            loadForumPosts();
-        };
-
-        function loadForumPosts() {
-            const posts = JSON.parse(localStorage.getItem('forumPosts'));
-            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-            const isAdmin = currentUser && currentUser.username === 'ImBurni';
-            
-            // Filtern
-            let filteredPosts = posts;
-            if (currentFilter !== 'all') {
-                filteredPosts = posts.filter(p => p.status === currentFilter);
-            }
-            
-            let html = '';
-            filteredPosts.forEach(post => {
-                let statusClass = 'label-default';
-                if (post.status === 'In Arbeit') statusClass = 'label-inarbeit';
-                if (post.status === 'Abgelehnt') statusClass = 'label-abgelehnt';
-                if (post.status === 'Abgeschlossen') statusClass = 'label-abgeschlossen';
-                
-                html += `
-                    <div class="forum-card">
-                        <div class="forum-header">
-                            <span class="forum-title">${post.title}</span>
-                            <span class="${statusClass}">${post.status}</span>
-                        </div>
-                        <div class="forum-meta">
-                            <span>👤 ${post.author}</span>
-                            <span>📅 ${post.date}</span>
-                            <span>💬 ${post.comments ? post.comments.length : 0} Kommentare</span>
-                        </div>
-                        <div class="forum-content">
-                            ${post.content.substring(0, 150)}${post.content.length > 150 ? '...' : ''}
-                        </div>
-                        <div class="forum-footer">
-                            <button class="btn btn-primary" style="padding: 5px 15px;" onclick="viewPost('${post.id}')">Ansehen</button>
-                            <div class="forum-actions">
-                                ${isAdmin ? `
-                                    <select onchange="changePostStatus('${post.id}', this.value)" style="padding: 5px; border-radius: 5px;">
-                                        <option value="In Arbeit" ${post.status === 'In Arbeit' ? 'selected' : ''}>In Arbeit</option>
-                                        <option value="Abgelehnt" ${post.status === 'Abgelehnt' ? 'selected' : ''}>Abgelehnt</option>
-                                        <option value="Abgeschlossen" ${post.status === 'Abgeschlossen' ? 'selected' : ''}>Abgeschlossen</option>
-                                    </select>
-                                    <button class="btn btn-danger" style="padding: 5px 10px;" onclick="deletePost('${post.id}')">🗑</button>
-                                ` : ''}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            document.getElementById('forumPosts').innerHTML = html || '<p style="text-align: center; color: #718096;">Keine Beiträge vorhanden</p>';
-        }
-
-        // ========== DATEN LADEN ==========
-        function loadAllData() {
-            loadOverview();
-            loadUsers();
-            loadUpdates();
-            loadTeamInfoForEdit();
-            loadForumPosts();
-        }
-
-        function loadOverview() {
-            const users = JSON.parse(localStorage.getItem('users'));
-            const posts = JSON.parse(localStorage.getItem('forumPosts'));
-            
-            const pendingUsers = users.filter(u => u.status === 'ausstehend' && u.username !== 'ImBurni');
-            
-            document.getElementById('totalPosts').innerHTML = posts.length;
-            document.getElementById('inProgressCount').innerHTML = posts.filter(p => p.status === 'In Arbeit').length;
-            document.getElementById('completedCount').innerHTML = posts.filter(p => p.status === 'Abgeschlossen').length;
-            document.getElementById('pendingUsers').innerHTML = pendingUsers.length;
-            
-            // Letzte 3 Beiträge
-            const recentPosts = posts.slice(0, 3);
-            let recentHtml = '';
-            recentPosts.forEach(post => {
-                recentHtml += `
-                    <div class="forum-card" style="margin-bottom: 10px; padding: 15px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span style="font-weight: 600;">${post.title}</span>
-                            <span class="${post.status === 'In Arbeit' ? 'label-inarbeit' : post.status === 'Abgelehnt' ? 'label-abgelehnt' : 'label-abgeschlossen'}" style="font-size: 11px;">${post.status}</span>
-                        </div>
-                        <div style="color: #718096; font-size: 12px; margin-top: 5px;">
-                            von ${post.author} · ${post.date}
-                        </div>
-                    </div>
-                `;
-            });
-            document.getElementById('recentPosts').innerHTML = recentHtml || '<p style="color: #718096;">Keine Beiträge</p>';
-            
-            // Ausstehende Nutzer Liste
-            let pendingHtml = '';
-            if (pendingUsers.length > 0) {
-                pendingUsers.forEach(user => {
-                    pendingHtml += `
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #f7fafc; border-radius: 8px; margin-bottom: 8px;">
-                            <div>
-                                <span style="font-weight: 500;">${user.username}</span>
-                                <span style="color: #718096; font-size: 12px; margin-left: 10px;">${user.registeredAt}</span>
-                            </div>
-                            <div>
-                                <button class="btn btn-success" style="padding: 5px 10px; margin-right: 5px;" onclick="approveUser('${user.id}')">✔</button>
-                                <button class="btn btn-danger" style="padding: 5px 10px;" onclick="rejectUser('${user.id}')">✖</button>
-                            </div>
-                        </div>
-                    `;
-                });
-            } else {
-                pendingHtml = '<p style="color: #718096;">Keine ausstehenden Registrierungen</p>';
-            }
-            document.getElementById('pendingUsersList').innerHTML = pendingHtml;
-        }
-
-        function loadUsers() {
-            const users = JSON.parse(localStorage.getItem('users'));
-            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-            const isAdmin = currentUser && currentUser.username === 'ImBurni';
-            
-            console.log('📊 Lade Users für Tabelle:', users);
-            
-            let html = '';
-            users.forEach(user => {
-                if (user.username === 'ImBurni') return;
-                
-                html += `
-                    <tr>
-                        <td>${user.username}</td>
-                        <td><span class="badge ${user.role === 'Admin' ? 'badge-admin' : 'badge-mod'}">${user.role}</span></td>
-                        <td><span class="badge ${user.status === 'aktiv' ? 'badge-active' : 'badge-pending'}">${user.status}</span></td>
-                        <td>${user.registeredAt || 'Unbekannt'}</td>
-                        <td>
-                            ${isAdmin ? `
-                                ${user.status === 'ausstehend' ? `
-                                    <button class="btn btn-success" style="padding: 5px 10px; margin-right: 5px;" onclick="approveUser('${user.id}')">✔ Freischalten</button>
-                                    <button class="btn btn-danger" style="padding: 5px 10px;" onclick="rejectUser('${user.id}')">✖ Ablehnen</button>
-                                ` : `
-                                    <button class="btn btn-danger" style="padding: 5px 10px;" onclick="deleteUser('${user.id}')">🗑 Löschen</button>
-                                `}
-                            ` : ''}
-                        </td>
-                    </tr>
-                `;
-            });
-            
-            if (users.filter(u => u.username !== 'ImBurni').length === 0) {
-                html = '<tr><td colspan="5" style="text-align: center; padding: 30px;">📭 Noch keine registrierten Nutzer</td></tr>';
-            }
-            
-            document.getElementById('usersTableBody').innerHTML = html;
-        }
-
-        function loadUpdates() {
-            const updates = JSON.parse(localStorage.getItem('updates'));
-            
-            let html = '';
-            updates.forEach(update => {
-                html += `
-                    <div class="forum-card">
-                        <div class="forum-header">
-                            <span class="forum-title">${update.title}</span>
-                            <span style="color: #718096;">${update.date} · von ${update.author}</span>
-                        </div>
-                        <div class="forum-content">${update.content}</div>
-                    </div>
-                `;
-            });
-            
-            document.getElementById('updatesList').innerHTML = html || '<p style="color: #718096;">Keine Updates vorhanden</p>';
-        }
-
-        function loadTeamInfoForEdit() {
-            const teamInfo = JSON.parse(localStorage.getItem('teamInfo'));
-            document.getElementById('teamName').value = teamInfo.name || '';
-            document.getElementById('teamDescription').value = teamInfo.description || '';
-            document.getElementById('teamEmail').value = teamInfo.email || '';
-        }
-
-        // ========== UPDATE FUNKTIONEN ==========
-        window.showUpdateModal = function() {
-            document.getElementById('updateModal').classList.add('active');
-        };
-
-        window.createUpdate = function() {
-            const title = document.getElementById('updateTitle').value;
-            const content = document.getElementById('updateContent').value;
-            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-            
-            if (!title || !content) {
-                alert('❌ Bitte Titel und Inhalt ausfüllen');
-                return;
-            }
-            
-            const updates = JSON.parse(localStorage.getItem('updates'));
-            const newUpdate = {
-                id: Date.now().toString(),
-                title: title,
-                content: content,
-                date: new Date().toLocaleDateString('de-DE'),
-                author: currentUser.username
-            };
-            
-            updates.unshift(newUpdate);
-            localStorage.setItem('updates', JSON.stringify(updates));
-            
-            closeModal('updateModal');
-            document.getElementById('updateTitle').value = '';
-            document.getElementById('updateContent').value = '';
-            
-            loadUpdates();
-            loadOverview();
-        };
-
-        // ========== TEAM INFO ==========
-        window.saveTeamInfo = function() {
-            const teamInfo = {
-                name: document.getElementById('teamName').value,
-                description: document.getElementById('teamDescription').value,
-                email: document.getElementById('teamEmail').value
-            };
-            
-            localStorage.setItem('teamInfo', JSON.stringify(teamInfo));
-            alert('✅ Team-Info gespeichert!');
-        };
-
-        // ========== ADMIN FUNKTIONEN ==========
-        window.approveUser = function(userId) {
-            console.log('✅ Freischalten von User:', userId);
-            let users = JSON.parse(localStorage.getItem('users'));
-            users = users.map(u => u.id === userId ? {...u, status: 'aktiv'} : u);
-            localStorage.setItem('users', JSON.stringify(users));
-            console.log('📊 Users nach Freischaltung:', users);
-            loadUsers();
-            loadOverview();
-        };
-
-        window.rejectUser = function(userId) {
-            console.log('❌ Ablehnen von User:', userId);
-            let users = JSON.parse(localStorage.getItem('users'));
-            users = users.filter(u => u.id !== userId);
-            localStorage.setItem('users', JSON.stringify(users));
-            console.log('📊 Users nach Ablehnung:', users);
-            loadUsers();
-            loadOverview();
-        };
-
-        window.deleteUser = function(userId) {
-            if (confirm('Nutzer wirklich löschen?')) {
-                console.log('🗑 Löschen von User:', userId);
-                let users = JSON.parse(localStorage.getItem('users'));
-                users = users.filter(u => u.id !== userId);
-                localStorage.setItem('users', JSON.stringify(users));
-                console.log('📊 Users nach Löschung:', users);
-                loadUsers();
-                loadOverview();
-            }
-        };
-
-        // ========== HELPER ==========
-        function updateHeader() {
-            const user = JSON.parse(sessionStorage.getItem('currentUser'));
-            if (user) {
-                document.getElementById('headerUserName').innerHTML = user.username + ' (' + user.role + ')';
-                document.getElementById('headerAvatar').innerHTML = user.username.charAt(0);
-            }
-        }
-
-        window.closeModal = function(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        };
-
-        window.showRegister = function() {
-            document.getElementById('loginPage').classList.add('hidden');
-            document.getElementById('registerPage').classList.remove('hidden');
-        };
-
-        window.backToLogin = function() {
-            document.getElementById('registerPage').classList.add('hidden');
-            document.getElementById('loginPage').classList.remove('hidden');
-            document.getElementById('registerMessage').innerHTML = '';
-        };
-
-        window.handleLogout = function() {
-            sessionStorage.removeItem('currentUser');
-            document.getElementById('dashboard').classList.add('hidden');
-            document.getElementById('loginPage').classList.remove('hidden');
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-        };
-
-        // ========== SESSION CHECK ==========
-        const currentUser = sessionStorage.getItem('currentUser');
-        if (currentUser) {
-            document.getElementById('loginPage').classList.add('hidden');
-            document.getElementById('dashboard').classList.remove('hidden');
-            updateHeader();
-            loadAllData();
-        }
-
-        // Enter-Taste für Login
-        document.getElementById('password').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleLogin();
-        });
-
-        console.log('✅ Team Portal mit Forum geladen');
-        console.log('Admin: ImBurni / Passwort: admin123');
-        console.log('📊 Aktuelle Users:', JSON.parse(localStorage.getItem('users')));
-    </script>
+  // ========= ECHTZEIT TWITCH LIVE STATUS =========
+  
+  async function fetchTwitchLiveStatus() {
+    try {
+      const uptimeRes = await fetch('https://decapi.me/twitch/uptime/ImBurni');
+      const uptimeText = await uptimeRes.text();
+      const isLive = uptimeText && !uptimeText.toLowerCase().includes('offline') && uptimeText.length > 3;
+      
+      const liveDot = document.getElementById('twitchLiveDot');
+      const statusText = document.getElementById('twitchStatusText');
+      const gameText = document.getElementById('twitchGameText');
+      
+      if (isLive) {
+        liveDot.className = 'live-indicator live';
+        statusText.innerHTML = '🟢 LIVE 🔴';
+        statusText.style.color = '#ff6699';
+        gameText.innerHTML = `📺 seit ${uptimeText.substring(0, 30)}`;
+      } else {
+        liveDot.className = 'live-indicator';
+        statusText.innerHTML = '⚫ OFFLINE';
+        statusText.style.color = '#aaaaff';
+        gameText.innerHTML = '';
+      }
+      
+    } catch (error) {
+      console.error('Twitch API Fehler:', error);
+      document.getElementById('twitchStatusText').innerHTML = '⚫ ?';
+    }
+  }
+  
+  function updateLastUpdated() {
+    const now = new Date();
+    document.getElementById('lastUpdated').innerHTML = `🔄 Live-Status: ${now.toLocaleTimeString('de-DE')} • Automatische Aktualisierung`;
+  }
+  
+  async function refreshTwitchStatus() {
+    await fetchTwitchLiveStatus();
+    updateLastUpdated();
+  }
+  
+  // Initial Load + alle 60 Sekunden
+  refreshTwitchStatus();
+  setInterval(refreshTwitchStatus, 60000);
+  
+  // Smooth Scroll
+  document.querySelectorAll('.nav-flex a').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      const id = this.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if(target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+  
+  console.log("%c🔥 IMBURNI – GOTT IM CODE 🔥", "color: #ff00cc; font-size: 20px; font-weight: bold;");
+  console.log("%cTwitch Live-Status aktiv | YouTube & Discord verlinkt | reiner Flex", "color: #00ffff; font-size: 14px;");
+</script>
 </body>
 </html>
